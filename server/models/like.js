@@ -7,7 +7,7 @@ const Like = db.Sequelize.define('Like', {
         primaryKey: true,
         autoIncrement: true,
     },
-    jobid: {
+    eventid: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

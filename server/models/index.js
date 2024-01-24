@@ -1,20 +1,20 @@
 "use strict"
 const User = require("./user");
-const Car = require("./car");
-const Job = require("./job");
+const Vehicle = require("./vehicle");
+const Event = require("./event");
 const Comment = require("./comment");
 const Image = require("./image");
 const Like = require("./like");
 
 async function init() {
     // create relationships between models
-        User.hasMany(Car, {
+        User.hasMany(Vehicle, {
             foreignKey: {
                 name: "userid",
                 allowNull: false,
             },
         });
-        Car.belongsTo(User, {
+        Vehicle.belongsTo(User, {
             foreignKey: {
                 name: "userid",
                 allowNull: false,
@@ -46,59 +46,59 @@ async function init() {
         });
 
 
-        Car.hasMany(Job, {
+        Vehicle.hasMany(Event, {
             foreignKey: {
-                name: "carid",
+                name: "vehicleid",
                 allowNull: false,
             },
         });
-        Job.belongsTo(Car, {
+        Event.belongsTo(Vehicle, {
             foreignKey: {
-                name: "carid",
+                name: "vehicleid",
                 allowNull: false,
             },
         });
 
-        Job.hasMany(Like, {
+        Event.hasMany(Like, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             }
         });
-        Like.belongsTo(Job, {
+        Like.belongsTo(Event, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             },
         });
-        Job.hasMany(Comment, {
+        Event.hasMany(Comment, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             },
         });
-        Comment.belongsTo(Job, {
+        Comment.belongsTo(Event, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             },
         });
-        Job.hasMany(Image, {
+        Event.hasMany(Image, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             },
         });
-        Image.belongsTo(Job, {
+        Image.belongsTo(Event, {
             foreignKey: {
-                name: "jobid",
+                name: "eventid",
                 allowNull: false,
             }
         });
       // sync all models with database
       await User.sync();
-      await Car.sync();
-      await Job.sync();
+      await Vehicle.sync();
+      await Event.sync();
       await Comment.sync();
       await Image.sync();
       await Like.sync();

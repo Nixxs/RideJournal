@@ -1,13 +1,13 @@
 const { DataTypes } = require('sequelize');
 const db = require('../db');
 
-const Job = db.Sequelize.define('Job', {
+const Event = db.Sequelize.define('Event', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
-    carid : {
+    vehicleid : {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -21,7 +21,7 @@ const Job = db.Sequelize.define('Job', {
     },
     type: {
         type: DataTypes.ENUM,
-        values: ['service', 'modification', 'upgrade', 'maintenance'],
+        values: ['repair', 'modification', 'story', 'maintenance'],
         allowNull: false
     },
     date: {
@@ -34,4 +34,4 @@ const Job = db.Sequelize.define('Job', {
     }
 });
 
-module.exports = Job;
+module.exports = Event;

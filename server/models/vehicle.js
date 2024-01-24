@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db");
 
-const Car = db.Sequelize.define("Car", {
+const Vehicle = db.Sequelize.define("Vehicle", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -9,6 +9,15 @@ const Car = db.Sequelize.define("Car", {
   },
   userid: {
     type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  type: {
+    type: DataTypes.ENUM,
+    values: ['car', 'motorcyle', 'boat', 'bicycle'],
     allowNull: false,
   },
   make: {
@@ -32,6 +41,10 @@ const Car = db.Sequelize.define("Car", {
       },
     },
   },
+  profile: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
-module.exports = Car;
+module.exports = Vehicle;

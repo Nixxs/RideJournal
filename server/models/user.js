@@ -25,10 +25,6 @@ const User = db.Sequelize.define(
         len: [6, 50],
       },
     },
-  },
-  {
-    // Other model options go here
-    tableName: 'Users'
   }
 );
 

@@ -7,7 +7,7 @@ const Image = db.Sequelize.define('Image', {
         primaryKey: true,
         autoIncrement: true,
     },
-    jobid: {
+    eventid: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

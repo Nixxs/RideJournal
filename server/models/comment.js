@@ -11,7 +11,7 @@ const Comment = db.Sequelize.define('Comment', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    jobid: {
+    eventid: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
