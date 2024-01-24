@@ -1,6 +1,12 @@
 require("dotenv").config();
-const express = require("express");
 
+// start up all the database services
+const db = require("./db");
+const models = require("./models");
+models.init();
+
+// start up the app services
+const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
