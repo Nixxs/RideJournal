@@ -25,6 +25,14 @@ const User = db.Sequelize.define(
         len: [6, 50],
       },
     },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    profile: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    }
   }
 );
 

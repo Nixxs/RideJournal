@@ -5,8 +5,8 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_DATABASE: 'ridejournaldb'
-      MYSQL_ROOT_PASSWORD: 'pa55word'
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
       - '3306:3306'
     expose:
