@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
+// import validators
+const {validationResult} = require('express-validator');
+const { idParamValidator } = require("../validators");
+const {userValidator} = require("../validators/userValidator");
+
 /**
  * @swagger
  * /api/users:
@@ -20,6 +25,106 @@ const userController = require("../controllers/userController");
 router.get("/", async (req, res) => {
     const data = await userController.getUsers();
     res.send(data);
+});
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  get:
+ *    description: Use to request a user by ID
+ *    tags:
+ *      - Users
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: ID of user to fetch
+ *        required: true
+ *        type: integer
+ *        minimum: 1
+ *        example: 1
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '404':
+ *        description: User not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.get("/:id", idParamValidator, async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        const data = await userController.getUser(req.params.id);
+        if (!data) {
+            res.sendStatus(404);
+        } else {
+            res.send({ result: 200, data: data });
+        }
+    } else {
+        res.status(422).json({errors: errors.array()});
+    }
+});
+
+/**
+ * @swagger
+ * /api/users:
+ *  post:
+ *    description: Use to create a new user
+ *    tags:
+ *      - Users
+ *    requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *         - name
+ *         - email
+ *         - password
+ *         - image
+ *        properties:
+ *         name:
+ *          type: string
+ *          example: John Doe
+ *         email:
+ *          type: string
+ *          example: john@dudes.com
+ *         password:
+ *          type: string
+ *          example: password
+ *         image:
+ *          type: string
+ *          example: http://some.image.com/image.jpg
+ *         profile:
+ *          type: text
+ *          example: im a great guy, just so great
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '400':
+ *        description: Invalid JSON
+ *      '404':
+ *        description: User not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.post("/", userValidator, async (req, res) =>{
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()){
+        const data = await userController.createUser(req.body);
+        if (!data){
+            res.sendStatus(404);
+        } else {
+            res.send({result:200, data:data});
+        }
+    } else {
+        res.status(422).json({errors: errors.array()});
+    }
+
 });
 
 module.exports = router;
