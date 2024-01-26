@@ -7,11 +7,11 @@ const Comment = db.Sequelize.define('Comment', {
         primaryKey: true,
         autoIncrement: true,
     },
-    userid : {
+    userId : {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    eventid: {
+    eventId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

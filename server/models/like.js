@@ -7,11 +7,11 @@ const Like = db.Sequelize.define('Like', {
         primaryKey: true,
         autoIncrement: true,
     },
-    eventid: {
+    eventId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    userid: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false
     }

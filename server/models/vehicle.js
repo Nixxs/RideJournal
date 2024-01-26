@@ -7,7 +7,7 @@ const Vehicle = db.Sequelize.define("Vehicle", {
     primaryKey: true,
     autoIncrement: true,
   },
-  userid: {
+  userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -40,6 +40,10 @@ const Vehicle = db.Sequelize.define("Vehicle", {
         }
       },
     },
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   profile: {
     type: DataTypes.TEXT,

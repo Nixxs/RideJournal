@@ -7,7 +7,7 @@ const Image = db.Sequelize.define('Image', {
         primaryKey: true,
         autoIncrement: true,
     },
-    eventid: {
+    eventId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

@@ -7,7 +7,7 @@ const Event = db.Sequelize.define('Event', {
         primaryKey: true,
         autoIncrement: true,
     },
-    vehicleid : {
+    vehicleId : {
         type: DataTypes.INTEGER,
         allowNull: false
     },
