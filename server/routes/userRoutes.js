@@ -5,7 +5,7 @@ const userController = require("../controllers/userController");
 // import validators
 const {validationResult} = require('express-validator');
 const { idParamValidator } = require("../validators");
-const {userValidator} = require("../validators/userValidator");
+const {userValidator, updateUserValidator} = require("../validators/userValidator");
 
 /**
  * @swagger
@@ -113,7 +113,6 @@ router.get("/:id", idParamValidator, async (req, res) => {
  */
 router.post("/", userValidator, async (req, res) =>{
     const errors = validationResult(req);
-
     if (errors.isEmpty()){
         const data = await userController.createUser(req.body);
         if (!data){
@@ -125,6 +124,115 @@ router.post("/", userValidator, async (req, res) =>{
         res.status(422).json({errors: errors.array()});
     }
 
+});
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  put:
+ *    description: Use to update a new user
+ *    tags:
+ *      - Users
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: ID of user to update
+ *        required: true
+ *        type: integer
+ *        minimum: 1
+ *        example: 1
+ *    requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *         - name
+ *         - email
+ *         - password
+ *         - image
+ *        properties:
+ *         name:
+ *          type: string
+ *          example: John Doe
+ *         email:
+ *          type: string
+ *          example: john@dudes.com
+ *         password:
+ *          type: string
+ *          example: password
+ *         image:
+ *          type: string
+ *          example: http://some.image.com/image.jpg
+ *         profile:
+ *          type: text
+ *          example: im a great guy, just so great
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '400':
+ *        description: Invalid JSON
+ *      '404':
+ *        description: User not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.put("/:id", updateUserValidator, async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()){
+        const data = await userController.updateUser(req.params.id, req.body);
+        if (!data){
+            // if there is no data returned then its a 404 not found
+            res.sendStatus(404);
+        } else {
+            // all good
+            res.send({result:200, data: data});
+        }
+    } else {
+        // there are errors in the request
+        res.status(422).json({errors: errors.array()});
+    }
+});
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *  delete:
+ *    description: Use to delete a user by ID
+ *    tags:
+ *      - Users
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: ID of user to fetch
+ *        required: true
+ *        type: integer
+ *        minimum: 1
+ *        example: 1
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '404':
+ *        description: User not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.delete("/:id", idParamValidator, async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()){
+        const data = await userController.deleteUser(req.params.id);
+        if (!data){
+            res.sendStatus(404);
+        } else {
+            res.send({result: 200, data: data});
+        }
+    } else {
+        res.status(422).json({errors: errors.array()});
+    }
 });
 
 module.exports = router;
