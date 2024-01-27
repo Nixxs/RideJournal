@@ -8,7 +8,9 @@ const userValidator = [
       "password",
       "The minimum password length is 6 characters, max 50"
     ).isLength({ min: 6, max: 50 }),
-    body("image", "image is required").not().isEmpty(),
+    body("image", "Image URL is required").not().isEmpty(),
+    body("image", "Invalid URL format for image").isURL(),
+    body("profile").optional().isLength({ min: 0 }),
 ];
 
 const updateUserValidator = [
@@ -21,7 +23,9 @@ const updateUserValidator = [
       "password",
       "The minimum password length is 6 characters, max 50"
     ).isLength({ min: 6, max: 50 }),
-    body("image", "image is required").not().isEmpty(),
+    body("image", "Image URL is required").not().isEmpty(),
+    body("image", "Invalid URL format for image").isURL(),
+    body("profile").optional().isLength({ min: 0 }),
 ];
 
 module.exports = {

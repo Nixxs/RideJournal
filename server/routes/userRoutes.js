@@ -99,6 +99,7 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *         profile:
  *          type: text
  *          example: im a great guy, just so great
+ *          nullable: true
  *    responses:
  *      '200':
  *        description: A successful response
@@ -167,6 +168,7 @@ router.post("/", userValidator, async (req, res) =>{
  *         profile:
  *          type: text
  *          example: im a great guy, just so great
+ *          nullable: true
  *    responses:
  *      '200':
  *        description: A successful response
