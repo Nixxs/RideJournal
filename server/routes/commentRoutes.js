@@ -158,10 +158,10 @@ router.get("/user/:id", idParamValidator, async (req, res) => {
  *       schema:
  *        type: object
  *        required:
- *         - userID
+ *         - userId
  *         - eventId
  *        properties:
- *         userID:
+ *         userId:
  *          type: integer
  *          example: 1
  *         eventId:
@@ -217,10 +217,10 @@ router.post("/", commentValidator, async (req, res) =>{
  *       schema:
  *        type: object
  *        required:
- *         - userID
+ *         - userId
  *         - eventId
  *        properties:
- *         userID:
+ *         userId:
  *          type: integer
  *          example: 1
  *         eventId:
@@ -260,7 +260,7 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
 
 /**
  * @swagger
- * /api/comment/{id}:
+ * /api/comments/{id}:
  *  delete:
  *    description: Use to delete a comment by ID
  *    tags:
@@ -268,7 +268,7 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
  *    parameters:
  *      - name: id
  *        in: path
- *        description: ID of comment to fetch
+ *        description: ID of comment to delete
  *        required: true
  *        type: integer
  *        minimum: 1
