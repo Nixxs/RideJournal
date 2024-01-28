@@ -1,4 +1,6 @@
 require("dotenv").config();
+const morganMiddleware = require("./logging/morganMiddleware");
+const Logger = require("./logging/logger");
 
 // start up all the database services
 const db = require("./db");
@@ -8,6 +10,9 @@ models.init();
 // start up the app services
 const express = require("express");
 const app = express();
+
+// setup morgan
+app.use(morganMiddleware);
 // parse all incoming data as json
 app.use(express.json());
 
@@ -32,5 +37,5 @@ app.get("/", (req, res) => {
 
 const port = process.env.PORT || 3000
 app.listen(port, ()=>{
-    console.log(`listening on port: ${port}`);
+    Logger.debug(`listening on port: ${port}`);
 });
