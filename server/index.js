@@ -20,8 +20,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // setup all the routes
 app.use("/api/users", require("./routes/userRoutes"));
-app.use("/api/comments", require("./routes/commentRoutes"));
 app.use("/api/vehicles", require("./routes/vehicleRoutes"));
+app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/comments", require("./routes/commentRoutes"));
 
 app.get("/", (req, res) => {
     res.send("hello world");

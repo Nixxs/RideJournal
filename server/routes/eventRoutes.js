@@ -1,43 +1,43 @@
 const express = require("express");
 const router = express.Router();
-const commentController = require("../controllers/commentController");
+const eventController = require("../controllers/eventController");
 
 // import validators
 const {validationResult} = require('express-validator');
 const { idParamValidator } = require("../validators");
-const {commentValidator, updateCommentValidator} = require("../validators/commentValidator");
+const {eventValidator, updateEventValidator, eventTypeParamValidator} = require("../validators/eventValidator");
 
 /**
  * @swagger
- * /api/comments:
+ * /api/events:
  *  get:
- *    description: Use to request all comments
+ *    description: Use to request all events
  *    tags:
- *      - Comments
+ *      - Events
  *    responses:
  *      '200':
  *        description: A successful response
  *      '404':
- *        description: Comment not found
+ *        description: Event not found
  *      '500':
  *        description: Server error
  */
 router.get("/", async (req, res) => {
-    const data = await commentController.getComments();
+    const data = await eventController.getEvents();
     res.send(data);
 });
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/events/{id}:
  *  get:
- *    description: Use to request a comment by ID
+ *    description: Use to request a event by ID
  *    tags:
- *      - Comments
+ *      - Events
  *    parameters:
  *      - name: id
  *        in: path
- *        description: ID of comment to fetch
+ *        description: ID of event to fetch
  *        required: true
  *        type: integer
  *        minimum: 1
@@ -46,7 +46,7 @@ router.get("/", async (req, res) => {
  *      '200':
  *        description: A successful response
  *      '404':
- *        description: Comment not found
+ *        description: Event not found
  *      '422':
  *        description: Validation error
  *      '500':
@@ -55,7 +55,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", idParamValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const data = await commentController.getComment(req.params.id);
+        const data = await eventController.getEvent(req.params.id);
         if (!data) {
             res.sendStatus(404);
         } else {
@@ -68,15 +68,15 @@ router.get("/:id", idParamValidator, async (req, res) => {
 
 /**
  * @swagger
- * /api/comments/event/{id}:
+ * /api/events/user/{id}:
  *  get:
- *    description: Use to request comments by event by ID
+ *    description: Use to request a event by vehicle ID
  *    tags:
- *      - Comments
+ *      - Vehicles
  *    parameters:
  *      - name: id
  *        in: path
- *        description: ID of event to fetch events
+ *        description: ID of vehicle to fetch events
  *        required: true
  *        type: integer
  *        minimum: 1
@@ -85,16 +85,16 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '200':
  *        description: A successful response
  *      '404':
- *        description: Comment not found
+ *        description: Events not found
  *      '422':
  *        description: Validation error
  *      '500':
  *        description: Server error
  */
-router.get("/event/:id", idParamValidator, async (req, res) => {
+router.get("/vehicle/:id", idParamValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const data = await commentController.getCommentsByEvent(req.params.id);
+        const data = await eventController.getEventsByVehicle(req.params.id);
         if (!data) {
             res.sendStatus(404);
         } else {
@@ -107,33 +107,32 @@ router.get("/event/:id", idParamValidator, async (req, res) => {
 
 /**
  * @swagger
- * /api/comments/user/{id}:
+ * /api/events/type/{type}:
  *  get:
- *    description: Use to request comments by use by ID
+ *    description: Use to request events by type
  *    tags:
- *      - Comments
+ *      - Events
  *    parameters:
- *      - name: id
+ *      - name: type
  *        in: path
- *        description: ID of user to fetch comments
+ *        description: type of event
  *        required: true
- *        type: integer
- *        minimum: 1
- *        example: 1
+ *        type: string
+ *        example: story
  *    responses:
  *      '200':
  *        description: A successful response
  *      '404':
- *        description: Comment not found
+ *        description: Events not found
  *      '422':
  *        description: Validation error
  *      '500':
  *        description: Server error
  */
-router.get("/user/:id", idParamValidator, async (req, res) => {
+router.get("/type/:type", eventTypeParamValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const data = await commentController.getCommentsByUser(req.params.id);
+        const data = await eventController.getEventsByType(req.params.type);
         if (!data) {
             res.sendStatus(404);
         } else {
@@ -144,48 +143,61 @@ router.get("/user/:id", idParamValidator, async (req, res) => {
     }
 });
 
-
 /**
  * @swagger
- * /api/comments:
+ * /api/events:
  *  post:
- *    description: Use to create a new comment
+ *    description: Use to create a new event
  *    tags:
- *      - Comments
+ *      - Events
  *    requestBody:
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *         - userId
- *         - eventId
- *        properties:
- *         userId:
- *          type: integer
- *          example: 1
- *         eventId:
- *          type: integer
- *          example: 1
- *         content:
- *          type: text
- *          example: what a great car.
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - vehicleId
+ *              - title
+ *              - type
+ *            properties:
+ *              vehicleId:
+ *                type: integer
+ *                example: 2
+ *              title:
+ *                type: string
+ *                example: Exhaust Upgrade
+ *              detail:
+ *                type: string
+ *                format: text
+ *                example: first we pulled off the old one, then we put on the new one
+ *                nullable: true
+ *              type:
+ *                type: string
+ *                enum: [repair, modification, story, maintenance]
+ *                example: story
+ *              date:
+ *                type: string
+ *                format: date
+ *                example: 2023-06-12
+ *              published:
+ *                type: boolean
+ *                example: true
  *    responses:
  *      '200':
  *        description: A successful response
  *      '400':
  *        description: Invalid JSON
  *      '404':
- *        description: Comment not found
+ *        description: Event not found
  *      '422':
  *        description: Validation error
  *      '500':
  *        description: Server error
  */
-router.post("/", commentValidator, async (req, res) =>{
+router.post("/", eventValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()){
-        const data = await commentController.createComment(req.body);
+        const data = await eventController.createEvent(req.body);
         if (!data){
             res.sendStatus(404);
         } else {
@@ -198,53 +210,67 @@ router.post("/", commentValidator, async (req, res) =>{
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/events/{id}:
  *  put:
- *    description: Use to update a comment
+ *    description: Use to update an existing event
  *    tags:
- *      - Comments
+ *      - Events
  *    parameters:
  *      - name: id
  *        in: path
- *        description: ID of comment to update
+ *        description: ID of event to update
  *        required: true
  *        type: integer
  *        minimum: 1
  *        example: 1
  *    requestBody:
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *         - userId
- *         - eventId
- *        properties:
- *         userId:
- *          type: integer
- *          example: 1
- *         eventId:
- *          type: integer
- *          example: 1
- *         content:
- *          type: text
- *          example: what a great car.
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - vehicleId
+ *              - title
+ *              - type
+ *            properties:
+ *              vehicleId:
+ *                type: integer
+ *                example: 2
+ *              title:
+ *                type: string
+ *                example: Exhaust Tip Upgrade
+ *              detail:
+ *                type: string
+ *                format: text
+ *                example: first we pulled off the old one, then we put on the new one
+ *                nullable: true
+ *              type:
+ *                type: string
+ *                enum: [repair, modification, story, maintenance]
+ *                example: story
+ *              date:
+ *                type: string
+ *                format: date
+ *                example: 2023-06-12
+ *              published:
+ *                type: boolean
+ *                example: true
  *    responses:
  *      '200':
  *        description: A successful response
  *      '400':
  *        description: Invalid JSON
  *      '404':
- *        description: Comment not found
+ *        description: Event not found
  *      '422':
  *        description: Validation error
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateCommentValidator, async (req, res) => {
+router.put("/:id", updateEventValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()){
-        const data = await commentController.updateComment(req.params.id, req.body);
+        const data = await eventController.updateEvent(req.params.id, req.body);
         if (!data){
             // if there is no data returned then its a 404 not found
             res.sendStatus(404);
@@ -260,15 +286,15 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
 
 /**
  * @swagger
- * /api/comments/{id}:
+ * /api/events/{id}:
  *  delete:
- *    description: Use to delete a comment by ID
+ *    description: Use to delete a event by ID
  *    tags:
- *      - Comments
+ *      - Events
  *    parameters:
  *      - name: id
  *        in: path
- *        description: ID of comment to delete
+ *        description: ID of event to fetch
  *        required: true
  *        type: integer
  *        minimum: 1
@@ -277,7 +303,7 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
  *      '200':
  *        description: A successful response
  *      '404':
- *        description: Comment not found
+ *        description: Event not found
  *      '422':
  *        description: Validation error
  *      '500':
@@ -286,7 +312,7 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
 router.delete("/:id", idParamValidator, async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()){
-        const data = await commentController.deleteComment(req.params.id);
+        const data = await eventController.deleteEvent(req.params.id);
         if (!data){
             res.sendStatus(404);
         } else {
@@ -296,6 +322,5 @@ router.delete("/:id", idParamValidator, async (req, res) => {
         res.status(422).json({errors: errors.array()});
     }
 });
-
 
 module.exports = router;
