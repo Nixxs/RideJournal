@@ -42,7 +42,6 @@ module.exports = {
     updateComment,
     deleteComment,
     getComment,
-    getCommentIncludeAll,
     getCommentsByEvent,
     getCommentsByUser,
 };
