@@ -24,6 +24,7 @@ app.use("/api/vehicles", require("./routes/vehicleRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/comments", require("./routes/commentRoutes"));
 app.use("/api/images", require("./routes/imageRoutes"));
+app.use("/api/likes", require("./routes/likeRoutes"));
 
 app.get("/", (req, res) => {
     res.send("hello world");
