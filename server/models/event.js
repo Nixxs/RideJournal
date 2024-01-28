@@ -28,6 +28,10 @@ const Event = db.Sequelize.define('Event', {
         type: DataTypes.DATEONLY,
         allowNull: false
     },
+    odometer: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     published: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

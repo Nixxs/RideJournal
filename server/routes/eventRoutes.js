@@ -179,6 +179,10 @@ router.get("/type/:type", eventTypeParamValidator, async (req, res) => {
  *                type: string
  *                format: date
  *                example: 2023-06-12
+ *              odometer:
+ *                type: integer
+ *                example: 120000
+ *                nullable: true
  *              published:
  *                type: boolean
  *                example: true
@@ -252,6 +256,10 @@ router.post("/", eventValidator, async (req, res) => {
  *                type: string
  *                format: date
  *                example: 2023-06-12
+ *              odometer:
+ *                type: integer
+ *                example: 120000
+ *                nullable: true
  *              published:
  *                type: boolean
  *                example: true

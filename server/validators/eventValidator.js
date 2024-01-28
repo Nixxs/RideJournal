@@ -9,6 +9,7 @@ const eventValidator = [
     body("type", "Invalid event type").matches(/^(repair|modification|story|maintenance)$/),
     body("date", "a valid date is required").not().isEmpty(),
     body("date", "invalid date format").isISO8601(),
+    body("odometer", "odometer must be a number").isNumeric(),
     body("published", "published must be a boolean").isBoolean(),
 ];
 
@@ -23,6 +24,7 @@ const updateEventValidator = [
     body("type", "Invalid event type").matches(/^(repair|modification|story|maintenance)$/),
     body("date", "a valid date is required").not().isEmpty(),
     body("date", "invalid date format").isISO8601(),
+    body("odometer", "odometer must be a number").isNumeric(),
     body("published", "published must be a boolean").isBoolean(),
 ];
 
