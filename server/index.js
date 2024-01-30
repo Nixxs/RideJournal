@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { handleInvalidJson, handleUnauthorized, handleNotFound, handleAllOtherErrors } = require("./errors/errorHandler");
 const morganMiddleware = require("./logging/morganMiddleware");
 const Logger = require("./logging/logger");
 
@@ -34,6 +35,12 @@ app.use("/api/likes", require("./routes/likeRoutes"));
 app.get("/", (req, res) => {
     res.send("hello world");
 });
+
+// Add error handler middleware functions to the pipeline
+app.use(handleInvalidJson);
+app.use(handleUnauthorized);
+app.use(handleNotFound);
+app.use(handleAllOtherErrors);
 
 const port = process.env.PORT || 3000
 app.listen(port, ()=>{
