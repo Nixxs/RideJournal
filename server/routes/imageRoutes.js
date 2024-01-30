@@ -124,9 +124,9 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *         eventId:
  *          type: integer
  *          example: 3
- *         url:
+ *         image:
  *          type: string
- *          example: http://some.image.com/image.jpg
+ *          example: image.jpg
  *    responses:
  *      '200':
  *        description: A successful response

@@ -16,8 +16,7 @@ const vehicleValidator = [
         }
         return true;
     }),
-    body("image", "Image URL is required").not().isEmpty(),
-    body("image", "Invalid URL format for image").isURL(),
+    body("image", "Image name is required").not().isEmpty(),
     body("profile").optional().isLength({ min: 0 }),
 ];
 
@@ -39,8 +38,7 @@ const updateVehicleValidator = [
         }
         return true;
     }),
-    body("image", "Image URL is required").not().isEmpty(),
-    body("image", "Invalid URL format for image").isURL(),
+    body("image", "Image name is required").not().isEmpty(),
     body("profile").optional().isLength({ min: 0 }),
 ];
 

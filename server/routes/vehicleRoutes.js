@@ -185,7 +185,7 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res) => {
  *                example: 2020
  *              image:
  *                type: string
- *                example: http://example.com/mycar.jpg
+ *                example: mycar.jpg
  *              profile:
  *                type: string
  *                example: This is my favorite car.
@@ -266,7 +266,7 @@ router.post("/", vehicleValidator, async (req, res) => {
  *                example: 2020
  *              image:
  *                type: string
- *                example: http://example.com/mycar.jpg
+ *                example: mycar.jpg
  *              profile:
  *                type: string
  *                example: This is my favorite car.

@@ -95,7 +95,7 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *          example: password
  *         image:
  *          type: string
- *          example: http://some.image.com/image.jpg
+ *          example: image.jpg
  *         profile:
  *          type: text
  *          example: im a great guy, just so great
@@ -164,7 +164,7 @@ router.post("/", userValidator, async (req, res) =>{
  *          example: password
  *         image:
  *          type: string
- *          example: http://some.image.com/image.jpg
+ *          example: image.jpg
  *         profile:
  *          type: text
  *          example: im a great guy, just so great

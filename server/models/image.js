@@ -11,7 +11,7 @@ const Image = db.Sequelize.define('Image', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    url: {
+    image: {
         type: DataTypes.STRING,
         allowNull: false
     }
