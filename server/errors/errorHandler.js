@@ -7,15 +7,15 @@ function handleInvalidJson(err, req, res, next) {
       return res.status(400).send({ message: 'Invalid JSON' });
     }
     next(err);
-  }
-  
+}
+
 // Middleware function to handle unauthorized errors
 function handleUnauthorized(err, req, res, next) {
-if (err.status === 401) {
-    Logger.error(err);
-    return res.status(401).send({ message: 'Unauthorized' });
-}
-next(err);
+    if (err.status === 401) {
+        Logger.error(err);
+        return res.status(401).send({ message: 'Unauthorized' });
+    }
+    next(err);
 }
 
 // Middleware function to handle not found errors

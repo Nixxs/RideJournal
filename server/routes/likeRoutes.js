@@ -22,9 +22,13 @@ const {likeValidator} = require("../validators/likeValidator");
  *      '500':
  *        description: Server error
  */
-router.get("/", async (req, res) => {
-    const data = await likeController.getLikes();
-    res.send(data);
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await likeController.getLikes();
+        res.send(data);
+    } catch(err) {
+        next(err);
+    }
 });
 
 /**
@@ -52,17 +56,21 @@ router.get("/", async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await likeController.getLike(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await likeController.getLike(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -91,17 +99,21 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/event/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await likeController.getLikesByEvent(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/event/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await likeController.getLikesByEvent(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -130,17 +142,21 @@ router.get("/event/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/user/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await likeController.getLikesByUser(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/user/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await likeController.getLikesByUser(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -178,17 +194,21 @@ router.get("/user/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", likeValidator, async (req, res) =>{
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await likeController.createLike(req.body);
-        if (!data){
-            res.sendStatus(404);
+router.post("/", likeValidator, async (req, res, next) =>{
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await likeController.createLike(req.body);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result:200, data:data});
+            }
         } else {
-            res.send({result:200, data:data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -217,17 +237,21 @@ router.post("/", likeValidator, async (req, res) =>{
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await likeController.deleteLike(req.params.id);
-        if (!data){
-            res.sendStatus(404);
+router.delete("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await likeController.deleteLike(req.params.id);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result: 200, data: data});
+            }
         } else {
-            res.send({result: 200, data: data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 

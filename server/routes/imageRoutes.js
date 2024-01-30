@@ -22,9 +22,13 @@ const {imageValidator} = require("../validators/imageValidator");
  *      '500':
  *        description: Server error
  */
-router.get("/", async (req, res) => {
-    const data = await imageController.getImages();
-    res.send(data);
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await imageController.getImages();
+        res.send(data);
+    } catch(err) {
+        next(err);
+    }
 });
 
 /**
@@ -33,7 +37,7 @@ router.get("/", async (req, res) => {
  *  get:
  *    description: Use to request a image by ID
  *    tags:
- *      - Users
+ *      - Images
  *    parameters:
  *      - name: id
  *        in: path
@@ -52,17 +56,21 @@ router.get("/", async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await imageController.getImage(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await imageController.getImage(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -72,7 +80,7 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *  get:
  *    description: Use to request images for a given event ID
  *    tags:
- *      - Users
+ *      - Images
  *    parameters:
  *      - name: id
  *        in: path
@@ -91,17 +99,21 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await imageController.getImagesByEvent(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await imageController.getImagesByEvent(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -139,19 +151,22 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", imageValidator, async (req, res) =>{
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await imageController.createImage(req.body);
-        if (!data){
-            res.sendStatus(404);
+router.post("/", imageValidator, async (req, res, next) =>{
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await imageController.createImage(req.body);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result:200, data:data});
+            }
         } else {
-            res.send({result:200, data:data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
-
 });
 
 /**
@@ -179,17 +194,21 @@ router.post("/", imageValidator, async (req, res) =>{
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await imageController.deleteImage(req.params.id);
-        if (!data){
-            res.sendStatus(404);
+router.delete("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await imageController.deleteImage(req.params.id);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result: 200, data: data});
+            }
         } else {
-            res.send({result: 200, data: data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 

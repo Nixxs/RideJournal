@@ -22,9 +22,13 @@ const {eventValidator, updateEventValidator, eventTypeParamValidator} = require(
  *      '500':
  *        description: Server error
  */
-router.get("/", async (req, res) => {
-    const data = await eventController.getEvents();
-    res.send(data);
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await eventController.getEvents();
+        res.send(data);
+    } catch(err) {
+        next(err);
+    }
 });
 
 /**
@@ -52,27 +56,31 @@ router.get("/", async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await eventController.getEvent(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await eventController.getEvent(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
 /**
  * @swagger
- * /api/events/user/{id}:
+ * /api/events/vehicle/{id}:
  *  get:
  *    description: Use to request a event by vehicle ID
  *    tags:
- *      - Vehicles
+ *      - Events
  *    parameters:
  *      - name: id
  *        in: path
@@ -91,17 +99,21 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/vehicle/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await eventController.getEventsByVehicle(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/vehicle/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await eventController.getEventsByVehicle(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -129,17 +141,21 @@ router.get("/vehicle/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/type/:type", eventTypeParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await eventController.getEventsByType(req.params.type);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/type/:type", eventTypeParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await eventController.getEventsByType(req.params.type);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -198,17 +214,21 @@ router.get("/type/:type", eventTypeParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", eventValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await eventController.createEvent(req.body);
-        if (!data){
-            res.sendStatus(404);
+router.post("/", eventValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await eventController.createEvent(req.body);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result:200, data:data});
+            }
         } else {
-            res.send({result:200, data:data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -275,20 +295,24 @@ router.post("/", eventValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateEventValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await eventController.updateEvent(req.params.id, req.body);
-        if (!data){
-            // if there is no data returned then its a 404 not found
-            res.sendStatus(404);
+router.put("/:id", updateEventValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await eventController.updateEvent(req.params.id, req.body);
+            if (!data){
+                // if there is no data returned then its a 404 not found
+                res.sendStatus(404);
+            } else {
+                // all good
+                res.send({result:200, data: data});
+            }
         } else {
-            // all good
-            res.send({result:200, data: data});
+            // there are errors in the request
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        // there are errors in the request
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -317,17 +341,21 @@ router.put("/:id", updateEventValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await eventController.deleteEvent(req.params.id);
-        if (!data){
-            res.sendStatus(404);
+router.delete("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await eventController.deleteEvent(req.params.id);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result: 200, data: data});
+            }
         } else {
-            res.send({result: 200, data: data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 

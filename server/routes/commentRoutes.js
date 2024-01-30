@@ -22,9 +22,13 @@ const {commentValidator, updateCommentValidator} = require("../validators/commen
  *      '500':
  *        description: Server error
  */
-router.get("/", async (req, res) => {
-    const data = await commentController.getComments();
-    res.send(data);
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await commentController.getComments();
+        res.send(data);
+    } catch(err) {
+        next(err);
+    }
 });
 
 /**
@@ -52,17 +56,21 @@ router.get("/", async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
+router.get("/:id", idParamValidator, async (req, res, next) => {
     const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await commentController.getComment(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+    try {
+        if (errors.isEmpty()) {
+            const data = await commentController.getComment(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -91,17 +99,21 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/event/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await commentController.getCommentsByEvent(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/event/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await commentController.getCommentsByEvent(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -130,17 +142,21 @@ router.get("/event/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/user/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await commentController.getCommentsByUser(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/user/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await commentController.getCommentsByUser(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -182,17 +198,21 @@ router.get("/user/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", commentValidator, async (req, res) =>{
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await commentController.createComment(req.body);
-        if (!data){
-            res.sendStatus(404);
+router.post("/", commentValidator, async (req, res, next) =>{
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await commentController.createComment(req.body);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result:200, data:data});
+            }
         } else {
-            res.send({result:200, data:data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -241,20 +261,24 @@ router.post("/", commentValidator, async (req, res) =>{
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateCommentValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await commentController.updateComment(req.params.id, req.body);
-        if (!data){
-            // if there is no data returned then its a 404 not found
-            res.sendStatus(404);
+router.put("/:id", updateCommentValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await commentController.updateComment(req.params.id, req.body);
+            if (!data){
+                // if there is no data returned then its a 404 not found
+                res.sendStatus(404);
+            } else {
+                // all good
+                res.send({result:200, data: data});
+            }
         } else {
-            // all good
-            res.send({result:200, data: data});
+            // there are errors in the request
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        // there are errors in the request
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -283,19 +307,22 @@ router.put("/:id", updateCommentValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await commentController.deleteComment(req.params.id);
-        if (!data){
-            res.sendStatus(404);
+router.delete("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await commentController.deleteComment(req.params.id);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result: 200, data: data});
+            }
         } else {
-            res.send({result: 200, data: data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
-
 
 module.exports = router;

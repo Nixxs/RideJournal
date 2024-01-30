@@ -22,9 +22,13 @@ const {userValidator, updateUserValidator} = require("../validators/userValidato
  *      '500':
  *        description: Server error
  */
-router.get("/", async (req, res) => {
-    const data = await userController.getUsers();
-    res.send(data);
+router.get("/", async (req, res, next) => {
+    try {
+        const data = await userController.getUsers();
+        res.send(data);
+    } catch(err) {
+        next(err);
+    }
 });
 
 /**
@@ -52,17 +56,21 @@ router.get("/", async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.get("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        const data = await userController.getUser(req.params.id);
-        if (!data) {
-            res.sendStatus(404);
+router.get("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await userController.getUser(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
         } else {
-            res.send({ result: 200, data: data });
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -112,19 +120,22 @@ router.get("/:id", idParamValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", userValidator, async (req, res) =>{
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await userController.createUser(req.body);
-        if (!data){
-            res.sendStatus(404);
+router.post("/", userValidator, async (req, res, next) =>{
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await userController.createUser(req.body);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result:200, data:data});
+            }
         } else {
-            res.send({result:200, data:data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
-
 });
 
 /**
@@ -181,20 +192,24 @@ router.post("/", userValidator, async (req, res) =>{
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateUserValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await userController.updateUser(req.params.id, req.body);
-        if (!data){
-            // if there is no data returned then its a 404 not found
-            res.sendStatus(404);
+router.put("/:id", updateUserValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await userController.updateUser(req.params.id, req.body);
+            if (!data){
+                // if there is no data returned then its a 404 not found
+                res.sendStatus(404);
+            } else {
+                // all good
+                res.send({result:200, data: data});
+            }
         } else {
-            // all good
-            res.send({result:200, data: data});
+            // there are errors in the request
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        // there are errors in the request
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
@@ -223,17 +238,21 @@ router.put("/:id", updateUserValidator, async (req, res) => {
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()){
-        const data = await userController.deleteUser(req.params.id);
-        if (!data){
-            res.sendStatus(404);
+router.delete("/:id", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()){
+            const data = await userController.deleteUser(req.params.id);
+            if (!data){
+                res.sendStatus(404);
+            } else {
+                res.send({result: 200, data: data});
+            }
         } else {
-            res.send({result: 200, data: data});
+            res.status(422).json({errors: errors.array()});
         }
-    } else {
-        res.status(422).json({errors: errors.array()});
+    } catch(err) {
+        next(err);
     }
 });
 
