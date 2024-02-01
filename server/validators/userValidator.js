@@ -8,7 +8,6 @@ const userValidator = [
       "password",
       "The minimum password length is 6 characters, max 50"
     ).isLength({ min: 6, max: 50 }),
-    body("image", "Image name is required").not().isEmpty(),
     body("profile").optional().isLength({ min: 0 }),
 ];
 
@@ -22,7 +21,6 @@ const updateUserValidator = [
       "password",
       "The minimum password length is 6 characters, max 50"
     ).isLength({ min: 6, max: 50 }),
-    body("image", "Image name is required").not().isEmpty(),
     body("profile").optional().isLength({ min: 0 }),
 ];
 

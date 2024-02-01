@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const { saveImage } = require("../utils/uploadManager");
 
 const getUsers = async () => {
     const data = await User.findAll({});
@@ -11,12 +12,26 @@ const getUser = async (id) => {
 }
 
 const createUser = async (data) => {
-    const user = await User.create(data);
+    const { image, ...userData } = data;
+    // if there is an image in the data to handle
+    if (image){
+        userData.image = await saveImage(image);
+    } else {
+        userData.image = "default.png";
+    }
+    // do the database create line here
+    const user = await User.create(userData);
     return user;
 }
 
 const updateUser = async (id, data) => {
-    const user = await User.update(data, {where: {id: id}});
+    const { image, ...userData } = data;
+    // if there is an image in the data to handle
+    if (image){
+        userData.image = await saveImage(image);
+    } 
+    // do the database create line here
+    const user = await User.update(userData, {where: {id: id}});
     return user;
 }
 
