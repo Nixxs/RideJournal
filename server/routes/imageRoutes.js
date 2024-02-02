@@ -2,9 +2,13 @@ const express = require("express");
 const router = express.Router();
 const imageController = require("../controllers/imageController");
 
+// import multer for image file hanlding
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 // import validators
 const {validationResult} = require('express-validator');
-const { idParamValidator } = require("../validators");
+const { idParamValidator, imageUploadValidator } = require("../validators");
 const {imageValidator} = require("../validators/imageValidator");
 
 /**
@@ -126,19 +130,21 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
  *      - Images
  *    requestBody:
  *     content:
- *      application/json:
+ *      multipart/form-data:
  *       schema:
  *        type: object
  *        required:
  *         - eventId
- *         - url
+ *         - image
  *        properties:
  *         eventId:
  *          type: integer
  *          example: 3
  *         image:
  *          type: string
- *          example: image.jpg
+ *          format: binary
+ *          description: image file
+ *          nullable: false
  *    responses:
  *      '200':
  *        description: A successful response
@@ -151,11 +157,15 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", imageValidator, async (req, res, next) =>{
+router.post("/", upload.single('image'), imageUploadValidator, imageValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await imageController.createImage(req.body);
+            let imageData = req.body;
+            if (req.file){
+                imageData.image = req.file;
+            }
+            const data = await imageController.createImage(imageData);
             if (!data){
                 res.sendStatus(404);
             } else {

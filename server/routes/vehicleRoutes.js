@@ -2,9 +2,13 @@ const express = require("express");
 const router = express.Router();
 const vehicleController = require("../controllers/vehicleController");
 
+// import multer for image file hanlding
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 // import validators
 const {validationResult} = require('express-validator');
-const { idParamValidator } = require("../validators");
+const { idParamValidator, imageUploadValidator } = require("../validators");
 const {vehicleValidator, updateVehicleValidator, vehicleTypeParamValidator} = require("../validators/vehicleValidator");
 
 /**
@@ -168,7 +172,7 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *      - Vehicles
  *    requestBody:
  *      content:
- *        application/json:
+ *        multipart/form-data:
  *          schema:
  *            type: object
  *            required:
@@ -177,7 +181,6 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *              - make
  *              - model
  *              - year
- *              - image
  *            properties:
  *              userId:
  *                type: integer
@@ -201,7 +204,9 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *                example: 2020
  *              image:
  *                type: string
- *                example: mycar.jpg
+ *                format: binary
+ *                description: Optional image file
+ *                nullable: true
  *              profile:
  *                type: string
  *                example: This is my favorite car.
@@ -218,11 +223,15 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", vehicleValidator, async (req, res, next) => {
+router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await vehicleController.createVehicle(req.body);
+            let vehicleData = req.body;
+            if (req.file){
+                vehicleData.image = req.file;
+            }
+            const data = await vehicleController.createVehicle(vehicleData);
             if (!data){
                 res.sendStatus(404);
             } else {
@@ -251,18 +260,11 @@ router.post("/", vehicleValidator, async (req, res, next) => {
  *        type: integer
  *        minimum: 1
  *        example: 1
- *    requestBody:
+*    requestBody:
  *      content:
- *        application/json:
+ *        multipart/form-data:
  *          schema:
  *            type: object
- *            required:
- *              - userId
- *              - type
- *              - make
- *              - model
- *              - year
- *              - image
  *            properties:
  *              userId:
  *                type: integer
@@ -286,7 +288,9 @@ router.post("/", vehicleValidator, async (req, res, next) => {
  *                example: 2020
  *              image:
  *                type: string
- *                example: mycar.jpg
+ *                format: binary
+ *                description: Optional image file
+ *                nullable: true
  *              profile:
  *                type: string
  *                example: This is my favorite car.
@@ -303,11 +307,15 @@ router.post("/", vehicleValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateVehicleValidator, async (req, res, next) => {
+router.put("/:id", upload.single('image'), imageUploadValidator, updateVehicleValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await vehicleController.updateVehicle(req.params.id, req.body);
+            let vehicleData = req.body;
+            if (req.file){
+                vehicleData.image = req.file
+            }
+            const data = await vehicleController.updateVehicle(req.params.id, vehicleData);
             if (!data){
                 // if there is no data returned then its a 404 not found
                 res.sendStatus(404);

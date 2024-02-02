@@ -2,10 +2,14 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
+// import multer for image file hanlding
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
 // import validators
 const {validationResult} = require('express-validator');
-const { idParamValidator } = require("../validators");
-const {userValidator, updateUserValidator} = require("../validators/userValidator");
+const { idParamValidator, imageUploadValidator } = require("../validators");
+const {userValidator, updateUserValidator, uniqueEmailValidator} = require("../validators/userValidator");
 
 /**
  * @swagger
@@ -82,37 +86,38 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
  *    tags:
  *      - Users
  *    requestBody:
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *         - name
- *         - email
- *         - password
- *         - image
- *        properties:
- *         name:
- *          type: string
- *          example: John Doe
- *         email:
- *          type: string
- *          example: john@dudes.com
- *         password:
- *          type: string
- *          example: password
- *         image:
- *          type: string
- *          example: image.jpg
- *         profile:
- *          type: text
- *          example: im a great guy, just so great
- *          nullable: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                example: John Doe
+ *              email:
+ *                type: string
+ *                example: john@dudes.com
+ *              password:
+ *                type: string
+ *                example: password
+ *              profile:
+ *                type: string
+ *                example: im a great guy, just so great
+ *                nullable: true
+ *              image:
+ *                type: string
+ *                format: binary
+ *                description: Optional image file
+ *                nullable: true
+ *            required:
+ *              - name
+ *              - email
+ *              - password
  *    responses:
  *      '200':
  *        description: A successful response
  *      '400':
- *        description: Invalid JSON
+ *        description: Invalid input
  *      '404':
  *        description: User not found
  *      '422':
@@ -120,11 +125,16 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", userValidator, async (req, res, next) =>{
+router.post("/", upload.single('image'), imageUploadValidator, uniqueEmailValidator, userValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await userController.createUser(req.body);
+            let userData = req.body;
+            if (req.file){
+                userData.image = req.file
+            }
+            const data = await userController.createUser(userData);
+
             if (!data){
                 res.sendStatus(404);
             } else {
@@ -154,37 +164,34 @@ router.post("/", userValidator, async (req, res, next) =>{
  *        minimum: 1
  *        example: 1
  *    requestBody:
- *     content:
- *      application/json:
- *       schema:
- *        type: object
- *        required:
- *         - name
- *         - email
- *         - password
- *         - image
- *        properties:
- *         name:
- *          type: string
- *          example: John Doe
- *         email:
- *          type: string
- *          example: john@dudes.com
- *         password:
- *          type: string
- *          example: password
- *         image:
- *          type: string
- *          example: image.jpg
- *         profile:
- *          type: text
- *          example: im a great guy, just so great
- *          nullable: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                example: John Doe
+ *              email:
+ *                type: string
+ *                example: john@dudes.com
+ *              password:
+ *                type: string
+ *                example: password
+ *              profile:
+ *                type: string
+ *                example: im a great guy, just so great
+ *                nullable: true
+ *              image:
+ *                type: string
+ *                format: binary
+ *                description: Optional image file
+ *                nullable: true
  *    responses:
  *      '200':
  *        description: A successful response
  *      '400':
- *        description: Invalid JSON
+ *        description: Invalid input
  *      '404':
  *        description: User not found
  *      '422':
@@ -192,11 +199,16 @@ router.post("/", userValidator, async (req, res, next) =>{
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateUserValidator, async (req, res, next) => {
+router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailValidator, updateUserValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await userController.updateUser(req.params.id, req.body);
+            let userData = req.body;
+            if (req.file){
+                userData.image = req.file
+            }
+            const data = await userController.updateUser(req.params.id, userData);
+
             if (!data){
                 // if there is no data returned then its a 404 not found
                 res.sendStatus(404);
