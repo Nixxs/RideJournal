@@ -12,9 +12,8 @@ const imageUploadValidator = (req, res, next) => {
       if (!allowedTypes.includes(req.file.mimetype)) {
           return res.status(422).json({ errors: [{ msg: 'Invalid file type. Only JPG, PNG, and GIF are allowed.' }] });
       }
-      // Additional file validation logic can be implemented here
   }
-  next(); // Proceed to next middleware or route handler
+  next();
 };
 
 module.exports = {

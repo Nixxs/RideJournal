@@ -229,7 +229,7 @@ router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator,
         if (errors.isEmpty()){
             let vehicleData = req.body;
             if (req.file){
-                vehicleData.image = req.file
+                vehicleData.image = req.file;
             }
             const data = await vehicleController.createVehicle(vehicleData);
             if (!data){

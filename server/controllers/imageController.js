@@ -1,4 +1,5 @@
 const Image = require("../models/image");
+const { saveImage } = require("../utils/uploadManager");
 
 const getImages = async () => {
     const data = await Image.findAll({});
@@ -16,7 +17,11 @@ const getImagesByEvent = async (id) => {
 }
 
 const createImage = async (data) => {
-    const image = await Image.create(data);
+    let imageData = {...data};
+    // if there is an image in the data to handle
+    imageData.image = await saveImage(data.image);
+
+    const image = await Image.create(imageData);
     return image;
 }
 
