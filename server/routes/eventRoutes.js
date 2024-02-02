@@ -252,10 +252,6 @@ router.post("/", eventValidator, async (req, res, next) => {
  *        application/json:
  *          schema:
  *            type: object
- *            required:
- *              - vehicleId
- *              - title
- *              - type
  *            properties:
  *              vehicleId:
  *                type: integer

@@ -23,13 +23,13 @@ const updateUserValidator = [
     body("profile").optional().isLength({ min: 0 }),
 ];
 
-const uniqueEmailValidator = body('email').custom(async (email) => {
+const uniqueEmailValidator = body('email').optional().custom(async (email) => {
     const existingUser = await User.findOne({ where: { email: email } });
     if (existingUser) {
       throw new Error('Email already in use');
     }
     return true; // Validation succeeded
-  });
+});
 
 module.exports = {
     userValidator,
