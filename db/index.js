@@ -1,5 +1,6 @@
 "use strict";
 const { Sequelize } = require("sequelize");
+const Logger = require('../logging/logger');
 
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -8,15 +9,23 @@ const sequelize = new Sequelize(
     {
         host: process.env.DB_HOST,
         dialect: "mysql",
+        logging: false,
+        ssl: process.env.DB_SSL,
+        dialectOptions: {
+            ssl: {
+                require: process.env.DB_SSL,
+                rejectUnauthorized: false,
+            }
+        }
     }
 );
 
 sequelize.authenticate()
     .then(() => {
-        console.log('Connection to db has been established successfully.');
+        Logger.log('Connection to db has been established successfully.');
     })
     .catch(err => {
-        console.error('Unable to connect to the database:', err);
+        Logger.error('Unable to connect to the database:', err);
     });
 
 module.exports = {

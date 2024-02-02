@@ -14,12 +14,12 @@ services:
     volumes:
       - ridejournaldata:/var/lib/mysql
 
-  # app:
-  #   build: .
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - db
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
 
 volumes:
   ridejournaldata:

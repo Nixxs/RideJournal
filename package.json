@@ -4,7 +4,8 @@
   "description": "back end of ride journal",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
+    "start": "node index.js",
+    "start-dev": "cross-env NODE_ENV=development node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js"
   },
   "author": "nicholas chai",
