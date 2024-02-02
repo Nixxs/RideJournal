@@ -9,7 +9,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // import validators
 const {validationResult} = require('express-validator');
 const { idParamValidator, imageUploadValidator } = require("../validators");
-const {userValidator, updateUserValidator} = require("../validators/userValidator");
+const {userValidator, updateUserValidator, uniqueEmailValidator} = require("../validators/userValidator");
 
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", upload.single('image'), imageUploadValidator, userValidator, async (req, res, next) =>{
+router.post("/", upload.single('image'), imageUploadValidator, uniqueEmailValidator, userValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
@@ -199,7 +199,7 @@ router.post("/", upload.single('image'), imageUploadValidator, userValidator, as
  *      '500':
  *        description: Server error
  */
-router.put("/:id", upload.single('image'), imageUploadValidator, updateUserValidator, async (req, res, next) => {
+router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailValidator, updateUserValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){

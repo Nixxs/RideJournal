@@ -1,4 +1,6 @@
 const { body, param } = require('express-validator');
+const User = require('../models/user'); 
+
 
 const userValidator = [
     body("name", "Name is required").not().isEmpty(),
@@ -21,7 +23,16 @@ const updateUserValidator = [
     body("profile").optional().isLength({ min: 0 }),
 ];
 
+const uniqueEmailValidator = body('email').custom(async (email) => {
+    const existingUser = await User.findOne({ where: { email: email } });
+    if (existingUser) {
+      throw new Error('Email already in use');
+    }
+    return true; // Validation succeeded
+  });
+
 module.exports = {
     userValidator,
-    updateUserValidator
+    updateUserValidator,
+    uniqueEmailValidator
 };
