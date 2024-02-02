@@ -1,4 +1,6 @@
 const Vehicle = require("../models/vehicle");
+const { saveImage } = require("../utils/uploadManager");
+
 
 const getVehicles = async () => {
     const data = await Vehicle.findAll({});
@@ -21,12 +23,25 @@ const getVehiclesByType = async (type) => {
 }
 
 const createVehicle = async (data) => {
-    const vehicle = await Vehicle.create(data);
+    const { image, ...vehicleData } = data;
+    // if there is an image in the data to handle
+    if (image){
+        vehicleData.image = await saveImage(image);
+    } else {
+        vehicleData.image = "default.png";
+    }
+
+    const vehicle = await Vehicle.create(vehicleData);
     return vehicle;
 }
 
 const updateVehicle = async (id, data) => {
-    const vehicle = await Vehicle.update(data, {where: {id: id}});
+    const { image, ...vehicleData } = data;
+    // if there is an image in the data to handle
+    if (image){
+        vehicleData.image = await saveImage(image);
+    } 
+    const vehicle = await Vehicle.update(vehicleData, {where: {id: id}});
     return vehicle;
 }
 
