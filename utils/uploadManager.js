@@ -4,7 +4,7 @@ const Logger = require('../logging/logger');
 
 const saveImage = async (image) => {
     const imageFilename = `image_${Date.now()}` + path.extname(image.originalname);
-    const filePath = path.join(__dirname, '../images', imageFilename);
+    const filePath = path.join(__dirname, '../public/images', imageFilename);
     try {
         await fs.writeFile(filePath, image.buffer);
         return imageFilename;
