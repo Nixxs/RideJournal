@@ -26,7 +26,7 @@ const createVehicle = async (data) => {
     const { image, ...vehicleData } = data;
     // if there is an image in the data to handle
     if (image){
-        vehicleData.image = await saveImage(image);
+        vehicleData.image = await saveImage(image, "vehicle");
     } else {
         vehicleData.image = "default.png";
     }
@@ -39,7 +39,7 @@ const updateVehicle = async (id, data) => {
     const { image, ...vehicleData } = data;
     // if there is an image in the data to handle
     if (image){
-        vehicleData.image = await saveImage(image);
+        vehicleData.image = await saveImage(image, "vehicle");
     } 
     const vehicle = await Vehicle.update(vehicleData, {where: {id: id}});
     return vehicle;

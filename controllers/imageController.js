@@ -19,7 +19,7 @@ const getImagesByEvent = async (id) => {
 const createImage = async (data) => {
     let imageData = {...data};
     // if there is an image in the data to handle
-    imageData.image = await saveImage(data.image);
+    imageData.image = await saveImage(data.image, "event");
 
     const image = await Image.create(imageData);
     return image;
