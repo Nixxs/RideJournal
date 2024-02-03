@@ -15,7 +15,7 @@ const createUser = async (data) => {
     const { image, ...userData } = data;
     // if there is an image in the data to handle
     if (image){
-        userData.image = await saveImage(image);
+        userData.image = await saveImage(image, "user");
     } else {
         userData.image = "default.png";
     }
@@ -28,7 +28,7 @@ const updateUser = async (id, data) => {
     const { image, ...userData } = data;
     // if there is an image in the data to handle
     if (image){
-        userData.image = await saveImage(image);
+        userData.image = await saveImage(image, "user");
     } 
     // do the database create line here
     const user = await User.update(userData, {where: {id: id}});
