@@ -48,7 +48,7 @@ jobs:
             DB_HOST=${{ secrets.DB_HOST }}
             DB_PORT=${{ secrets.DB_PORT }}
             PORT=${{ secrets.PORT }}
-
+            CLIENT_URL=${{ secrets.CLIENT_URL }}
 
       - name: Image digest
         run: echo ${{ steps.docker.outputs.digest }}

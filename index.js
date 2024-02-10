@@ -1,9 +1,11 @@
 require("dotenv").config();
+const cors = require('cors');
 const path = require('path');
 const favicon = require('serve-favicon');
 const { handleInvalidJson, handleUnauthorized, handleNotFound, handleAllOtherErrors } = require("./errors/errorHandler");
 const morganMiddleware = require("./logging/morganMiddleware");
 const Logger = require("./logging/logger");
+
 
 // start up all the database services
 const db = require("./db");
@@ -18,6 +20,13 @@ const app = express();
 app.use(morganMiddleware);
 // parse all incoming data as json
 app.use(express.json());
+
+// setup cors
+var corsOptions = {
+    origin: process.env.CLIENT_URL, // for dev environment
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
 
 // Setup Swagger when running in dev
 if (process.env.NODE_ENV === 'development') {
