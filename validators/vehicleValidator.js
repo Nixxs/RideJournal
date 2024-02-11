@@ -5,6 +5,7 @@ const vehicleValidator = [
     body("userId", "User ID has to be an integer").isNumeric(),
     body("type", "Vehicle type is required").not().isEmpty(),
     body("type", "Invalid vehicle type").matches(/^(car|motorcycle|boat|bicycle)$/),
+    body("location").optional().not().isEmpty(),
     body("make", "Make is required").not().isEmpty(),
     body("model", "Model is required").not().isEmpty(),
     body("year", "Year is required").not().isEmpty(),
@@ -25,6 +26,7 @@ const updateVehicleValidator = [
     param("id", "Vehicle ID has to be an integer").isNumeric(),
     body("userId").optional().isNumeric().withMessage("User ID has to be an integer"),
     body("type").optional().matches(/^(car|motorcycle|boat|bicycle)$/).withMessage("Invalid vehicle type"),
+    body("location").optional().not().isEmpty(),
     body("make").optional().not().isEmpty(),
     body("model").optional().not().isEmpty(),
     body("year").optional().isInt().withMessage("Year must be an integer")

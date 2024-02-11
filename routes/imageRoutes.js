@@ -29,7 +29,7 @@ const {imageValidator} = require("../validators/imageValidator");
 router.get("/", async (req, res, next) => {
     try {
         const data = await imageController.getImages();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }

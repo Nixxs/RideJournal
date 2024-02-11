@@ -29,7 +29,7 @@ const {vehicleValidator, updateVehicleValidator, vehicleTypeParamValidator} = re
 router.get("/", async (req, res, next) => {
     try {
         const data = await vehicleController.getVehicles();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }
@@ -193,6 +193,10 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *                type: string
  *                enum: [car, motorcycle, boat, bicycle]
  *                example: car
+ *              location:
+ *                type: string
+ *                example: Australia.
+ *                nullable: true
  *              make:
  *                type: string
  *                example: Toyota
@@ -277,6 +281,10 @@ router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator,
  *                type: string
  *                enum: [car, motorcycle, boat, bicycle]
  *                example: car
+  *              location:
+ *                type: string
+ *                example: Australia.
+ *                nullable: true
  *              make:
  *                type: string
  *                example: Toyota

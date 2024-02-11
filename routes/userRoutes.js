@@ -29,7 +29,7 @@ const {userValidator, updateUserValidator, uniqueEmailValidator} = require("../v
 router.get("/", async (req, res, next) => {
     try {
         const data = await userController.getUsers();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }

@@ -20,6 +20,10 @@ const Vehicle = db.Sequelize.define("Vehicle", {
     values: ['car', 'motorcyle', 'boat', 'bicycle'],
     allowNull: false,
   },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   make: {
     type: DataTypes.STRING,
     allowNull: false,

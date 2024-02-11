@@ -25,7 +25,7 @@ const {eventValidator, updateEventValidator, eventTypeParamValidator} = require(
 router.get("/", async (req, res, next) => {
     try {
         const data = await eventController.getEvents();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }

@@ -25,7 +25,7 @@ const {likeValidator} = require("../validators/likeValidator");
 router.get("/", async (req, res, next) => {
     try {
         const data = await likeController.getLikes();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }

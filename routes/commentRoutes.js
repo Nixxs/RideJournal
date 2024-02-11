@@ -25,7 +25,7 @@ const {commentValidator, updateCommentValidator} = require("../validators/commen
 router.get("/", async (req, res, next) => {
     try {
         const data = await commentController.getComments();
-        res.send(data);
+        res.send({result:200, data: data});
     } catch(err) {
         next(err);
     }
