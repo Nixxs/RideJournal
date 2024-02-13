@@ -11,12 +11,12 @@ const getLike = async (id) => {
 }
 
 const getLikesByEvent = async (id) => {
-    const data = await Like.findOne({where: {eventId: id}});
+    const data = await Like.findAll({where: {eventId: id}});
     return data;
 }
 
 const getLikesByUser = async (id) => {
-    const data = await Like.findOne({where: {userId: id}});
+    const data = await Like.findAll({where: {userId: id}});
     return data;
 }
 

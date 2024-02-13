@@ -12,7 +12,7 @@ const getImage = async (id) => {
 }
 
 const getImagesByEvent = async (id) => {
-    const data = await Image.findOne({where: {eventId: id}});
+    const data = await Image.findAll({where: {eventId: id}});
     return data;
 }
 
