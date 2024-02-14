@@ -3,11 +3,11 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 const uploadImages = async () => {
-  const imageURLs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg'];
+  const imageURLs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.png', '6.jpg'];
 
   for (let eventId = 1; eventId <= 39; eventId++) {
     // Determine the number of images to upload for this event
-    const numImagesToUpload = Math.floor(Math.random() * 4) + 1;
+    const numImagesToUpload = Math.floor(Math.random() * 6) + 1;
 
     for (let i = 0; i < numImagesToUpload; i++) {
       // Randomly select an image

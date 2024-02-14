@@ -76,6 +76,49 @@ router.get("/:id", idParamValidator, async (req, res, next) => {
 
 /**
  * @swagger
+ * /api/events/{id}/include:
+ *  get:
+ *    description: Use to request a event by ID with all includes
+ *    tags:
+ *      - Events
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: ID of event to fetch
+ *        required: true
+ *        type: integer
+ *        minimum: 1
+ *        example: 1
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '404':
+ *        description: Event not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.get("/:id/include", idParamValidator, async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (errors.isEmpty()) {
+            const data = await eventController.getEventIncludeAll(req.params.id);
+            if (!data) {
+                res.sendStatus(404);
+            } else {
+                res.send({ result: 200, data: data });
+            }
+        } else {
+            res.status(422).json({errors: errors.array()});
+        }
+    } catch(err) {
+        next(err);
+    }
+});
+
+/**
+ * @swagger
  * /api/events/vehicle/{id}:
  *  get:
  *    description: Use to request a event by vehicle ID

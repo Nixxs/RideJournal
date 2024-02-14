@@ -10,6 +10,11 @@ const getEvent = async (id) => {
     return data;
 }
 
+const getEventIncludeAll = async (id) => {
+    const data = await Event.findOne({ where: { id: id }, include: { all: true }});
+    return data;
+}
+
 const getEventsByVehicle = async (id) => {
     const data = await Event.findAll({where: {vehicleId: id}});
     return data;
@@ -38,6 +43,7 @@ const deleteEvent = async (id) => {
 module.exports = {
     getEvents,
     getEvent,
+    getEventIncludeAll,
     getEventsByVehicle,
     getEventsByType,
     createEvent,
