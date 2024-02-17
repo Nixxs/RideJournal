@@ -199,7 +199,9 @@ router.post("/login", userLoginValidator, async (req, res, next) => {
                 const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET, {
                     expiresIn: "1h"
                 });
-                res.send({ result: 200, data: token });
+
+                const payloadData = {token: token, user: userData};
+                res.send({ result: 200, data: payloadData });
             }else{
                 res.status(404).json({errors: ["Invalid email or password"]});
             }
@@ -267,7 +269,10 @@ router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailVali
         const errors = validationResult(req);
         if (errors.isEmpty()){
             let userData = req.body;
-            userData.password = await bcrypt.hash(userData.password, saltRounds);
+
+            if (userData.password){
+                userData.password = await bcrypt.hash(userData.password, saltRounds);
+            }
 
             if (req.file){
                 userData.image = req.file

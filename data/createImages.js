@@ -5,7 +5,7 @@ const FormData = require('form-data');
 const uploadImages = async () => {
   const imageURLs = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.png', '6.jpg'];
 
-  for (let eventId = 1; eventId <= 39; eventId++) {
+  for (let eventId = 1; eventId <= 21; eventId++) {
     // Determine the number of images to upload for this event
     const numImagesToUpload = Math.floor(Math.random() * 6) + 1;
 

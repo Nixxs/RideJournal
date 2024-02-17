@@ -2,88 +2,99 @@ const axios = require('axios');
 
 // List of events to post
 const events = [
-    {
-      "vehicleId": 4,
-      "title": "Acquisition of the E46",
-      "detail": "Bought a BMW E46 with a blown head gasket. The project begins.",
-      "type": "story",
-      "date": "2021-01-10",
-      "odometer": 170000,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Engine Rebuild",
-      "detail": "Began the meticulous process of rebuilding the engine. Every part inspected and restored to perfection.",
-      "type": "repair",
-      "date": "2021-03-15",
-      "odometer": 170050,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Engine Successfully Rebuilt",
-      "detail": "The engine rebuild is complete. The E46 roars to life once more, better than ever.",
-      "type": "story",
-      "date": "2021-05-20",
-      "odometer": 170100,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Transmission Swap Preparation",
-      "detail": "Sourced a ZF320 5-speed manual transmission from a 330i E46. Ready for the swap.",
-      "type": "modification",
-      "date": "2021-07-05",
-      "odometer": 170150,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Manual Transmission Swap",
-      "detail": "Swapped the automatic transmission for the manual ZF320. A new era for the E46 begins.",
-      "type": "modification",
-      "date": "2021-08-25",
-      "odometer": 170200,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "First Drive with Manual Transmission",
-      "detail": "Took the E46 for its first drive post-transmission swap. The difference is night and day.",
-      "type": "story",
-      "date": "2021-09-10",
-      "odometer": 170250,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Fine-Tuning and Adjustments",
-      "detail": "Made some fine-tuning adjustments to optimize the manual transmission setup. The E46 is performing beautifully.",
-      "type": "maintenance",
-      "date": "2021-10-15",
-      "odometer": 170300,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Last Drive",
-      "detail": "Took the E46 out for one last drive. Reflecting on the journey and the joy this car brought.",
-      "type": "story",
-      "date": "2021-12-01",
-      "odometer": 175000,
-      "published": true
-    },
-    {
-      "vehicleId": 4,
-      "title": "Saying Goodbye",
-      "detail": "With a heavy heart, we sold the E46. It was an amazing project and an unforgettable car.",
-      "type": "story",
-      "date": "2022-01-20",
-      "odometer": 175050,
-      "published": true
-    }
-  ]
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Acquisition of the New Adventure Rig",
+    "detail": "Welcomed a rugged, ready-for-anything vehicle into our lives, setting the stage for countless beach camping adventures across the stunning landscapes of Western Australia.",
+    "type": "story",
+    "date": "2021-03-01",
+    "odometer": 120000,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "First Modification: All-Terrain Tires",
+    "detail": "Equipped our vehicle with all-terrain tires, enhancing its capability to traverse the sandy beaches and rugged outbacks with ease, marking our first step towards customizing our adventure rig.",
+    "type": "modification",
+    "date": "2021-04-15",
+    "odometer": 120500,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "The Inaugural Beach Camp",
+    "detail": "Embarked on our first beach camping trip, with the vehicle proving its mettle against the challenging terrains of Yanchep. It was an unforgettable initiation into the world of off-road camping.",
+    "type": "story",
+    "date": "2021-05-20",
+    "odometer": 121000,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Suspension Upgrade for Tougher Trails",
+    "detail": "Upgraded the suspension system to better absorb the shocks and bumps of off-road driving. This modification allowed us to tackle even more challenging terrains with confidence.",
+    "type": "upgrade",
+    "date": "2021-07-05",
+    "odometer": 121500,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Overcoming a Breakdown in the Bush",
+    "detail": "Faced our first major challenge when the vehicle broke down in the remote bushlands. The repair was a testament to resilience and teamwork, strengthening our bond with the rig.",
+    "type": "repair",
+    "date": "2021-08-10",
+    "odometer": 122000,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Custom Roof Rack Installation",
+    "detail": "Added a custom roof rack, expanding our capacity for gear and supplies. This modification was crucial for our extended camping trips and adventures under the Western Australian stars.",
+    "type": "modification",
+    "date": "2021-09-25",
+    "odometer": 122500,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Exploring the Coral Coast",
+    "detail": "The vehicle took us on a memorable journey along the Coral Coast, where rugged landscapes meet the turquoise sea. Each mile covered was a story of discovery and awe.",
+    "type": "story",
+    "date": "2021-11-15",
+    "odometer": 130000,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "The Ultimate Beach Camp Setup",
+    "detail": "Finalized our beach camp setup with a state-of-the-art awning and portable solar panels, marking the culmination of our vehicle's transformation into the ultimate beach camping companion.",
+    "type": "upgrade",
+    "date": "2022-01-10",
+    "odometer": 130500,
+    "published": true
+  },
+  {
+    "vehicleId": 2,
+    "userId": 2,
+    "title": "Reflections on a Year of Adventures",
+    "detail": "As we look back on a year filled with incredible journeys and the transformation of our vehicle into a beacon of adventure, we're filled with gratitude for the memories made and the miles traveled.",
+    "type": "story",
+    "date": "2022-03-01",
+    "odometer": 135000,
+    "published": true
+  }
+]
+
+
   
 // Server URL
 const url = 'http://localhost:3000/api/events';
