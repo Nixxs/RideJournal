@@ -11,6 +11,11 @@ const getUser = async (id) => {
     return data;
 }
 
+const getUserByEmail = async (email) => { 
+    const data = await User.findOne({ where: { email: email } });
+    return data;
+};
+
 const createUser = async (data) => {
     const { image, ...userData } = data;
     // if there is an image in the data to handle
@@ -43,6 +48,7 @@ const deleteUser = async (id) => {
 module.exports = {
     getUsers,
     getUser,
+    getUserByEmail,
     createUser,
     updateUser,
     deleteUser

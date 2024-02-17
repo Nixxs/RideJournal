@@ -8,8 +8,8 @@ const userValidator = [
     body("email", "Invalid email").isEmail(),
     body(
       "password",
-      "The minimum password length is 6 characters, max 50"
-    ).isLength({ min: 6, max: 50 }),
+      "The minimum password length is 6 characters, max 120"
+    ).isLength({ min: 6, max: 120 }),
     body("profile").optional().isLength({ min: 0 }),
 ];
 
@@ -19,7 +19,7 @@ const updateUserValidator = [
     param("id", "User ID has to be an integer").isNumeric(),
     body("name").optional().not().isEmpty(),
     body("email").optional().isEmail().withMessage("Invalid email"),
-    body("password").optional().isLength({ min: 6, max: 50 }).withMessage("The minimum password length is 6 characters, max 50"),
+    body("password").optional().isLength({ min: 6, max: 120 }).withMessage("The minimum password length is 6 characters, max 120"),
     body("profile").optional().isLength({ min: 0 }),
 ];
 
@@ -31,8 +31,18 @@ const uniqueEmailValidator = body('email').optional().custom(async (email) => {
     return true; // Validation succeeded
 });
 
+const userLoginValidator = [
+  body("email", "Invalid does not Empty").not().isEmpty(),
+  body("email", "Invalid email").isEmail(),
+  body("password", "The minimum password length is 6 characters").isLength({
+    min: 6,
+    max: 120,
+  }),
+];
+
 module.exports = {
     userValidator,
     updateUserValidator,
-    uniqueEmailValidator
+    uniqueEmailValidator,
+    userLoginValidator
 };

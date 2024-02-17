@@ -9,7 +9,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 // import validators
 const {validationResult} = require('express-validator');
 const { idParamValidator, imageUploadValidator } = require("../validators");
-const {userValidator, updateUserValidator, uniqueEmailValidator} = require("../validators/userValidator");
+const {userValidator, updateUserValidator, uniqueEmailValidator, userLoginValidator} = require("../validators/userValidator");
+
+// import security related things
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 /**
  * @swagger
@@ -130,6 +135,8 @@ router.post("/", upload.single('image'), imageUploadValidator, uniqueEmailValida
         const errors = validationResult(req);
         if (errors.isEmpty()){
             let userData = req.body;
+            userData.password = await bcrypt.hashSync(userData.password, saltRounds);
+
             if (req.file){
                 userData.image = req.file
             }
@@ -145,6 +152,61 @@ router.post("/", upload.single('image'), imageUploadValidator, uniqueEmailValida
         }
     } catch(err) {
         next(err);
+    }
+});
+
+/**
+ * @swagger
+ * /api/users/login:
+ *  post:
+ *    description: Use to login a user and get back an authorization token
+ *    tags:
+ *      - Users
+ *    requestBody:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        required:
+ *         - email
+ *         - password
+ *        properties:
+ *         email:
+ *          type: string
+ *          example: john@dudes.com
+ *         password:
+ *          type: string
+ *          example: password
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '400':
+ *        description: Invalid JSON
+ *      '404':
+ *        description: User not found
+ *      '422':
+ *        description: Validation error
+ *      '500':
+ *        description: Server error
+ */
+router.post("/login", userLoginValidator, async (req, res, next) => {
+    try{
+        const errors = validationResult(req);
+        const userData = await userController.getUserByEmail(req.body.email);
+        if(userData){
+            if(bcrypt.compareSync(req.body.password, userData.password)){
+                const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET, {
+                    expiresIn: "1h"
+                });
+                res.send({ result: 200, data: token });
+            }else{
+                res.status(404).json({errors: ["Invalid email or password"]});
+            }
+        }else{
+            res.status(404).json({errors: errors.array()});
+        }
+    } catch(err){
+      next(err);
     }
 });
 
@@ -204,6 +266,8 @@ router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailVali
         const errors = validationResult(req);
         if (errors.isEmpty()){
             let userData = req.body;
+            userData.password = await bcrypt.hashSync(userData.password, saltRounds);
+
             if (req.file){
                 userData.image = req.file
             }
