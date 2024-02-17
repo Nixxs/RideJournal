@@ -107,7 +107,12 @@ router.get("/:id/include", idParamValidator, async (req, res, next) => {
             if (!data) {
                 res.sendStatus(404);
             } else {
-                res.send({ result: 200, data: data });
+                const filteredData = data.toJSON();
+                if (filteredData.User){
+                    delete filteredData.User.password;
+                    delete filteredData.User.email;
+                }
+                res.send({ result: 200, data: filteredData });
             }
         } else {
             res.status(422).json({errors: errors.array()});
@@ -215,10 +220,14 @@ router.get("/type/:type", eventTypeParamValidator, async (req, res, next) => {
  *          schema:
  *            type: object
  *            required:
+ *              - userId  
  *              - vehicleId
  *              - title
  *              - type
  *            properties:
+ *              userId:
+ *                type: integer
+ *                example: 1
  *              vehicleId:
  *                type: integer
  *                example: 2
@@ -296,6 +305,9 @@ router.post("/", eventValidator, async (req, res, next) => {
  *          schema:
  *            type: object
  *            properties:
+ *              userId:
+ *                type: integer
+ *                example: 1
  *              vehicleId:
  *                type: integer
  *                example: 2

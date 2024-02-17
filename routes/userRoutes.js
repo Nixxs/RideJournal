@@ -12,7 +12,7 @@ const { idParamValidator, imageUploadValidator } = require("../validators");
 const {userValidator, updateUserValidator, uniqueEmailValidator, userLoginValidator} = require("../validators/userValidator");
 
 // import security related things
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
@@ -194,7 +194,8 @@ router.post("/login", userLoginValidator, async (req, res, next) => {
         const errors = validationResult(req);
         const userData = await userController.getUserByEmail(req.body.email);
         if(userData){
-            if(bcrypt.compareSync(req.body.password, userData.password)){
+            const match = await bcrypt.compare(req.body.password, userData.password);
+            if(match){
                 const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET, {
                     expiresIn: "1h"
                 });
@@ -266,7 +267,7 @@ router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailVali
         const errors = validationResult(req);
         if (errors.isEmpty()){
             let userData = req.body;
-            userData.password = await bcrypt.hashSync(userData.password, saltRounds);
+            userData.password = await bcrypt.hash(userData.password, saltRounds);
 
             if (req.file){
                 userData.image = req.file

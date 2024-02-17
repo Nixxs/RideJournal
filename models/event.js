@@ -7,6 +7,10 @@ const Event = db.Sequelize.define('Event', {
         primaryKey: true,
         autoIncrement: true,
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     vehicleId : {
         type: DataTypes.INTEGER,
         allowNull: false

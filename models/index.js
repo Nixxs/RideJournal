@@ -44,6 +44,18 @@ async function init() {
                 allowNull: false,
             }
         });
+        User.hasMany(Event, {
+            foreignKey: {
+                name: "userId",
+                allowNull: false,
+            },
+        });
+        Event.belongsTo(User, {
+            foreignKey: {
+                name: "userId",
+                allowNull: false,
+            },
+        });
 
 
         Vehicle.hasMany(Event, {

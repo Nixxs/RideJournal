@@ -1,6 +1,8 @@
 const { body, param } = require("express-validator");
 
 const eventValidator = [
+    body("userId", "a user id is required").not().isEmpty(),
+    body("userId", "user id has to be an integer").isNumeric(),
     body("vehicleId", "a vehicle id is required").not().isEmpty(),
     body("vehicleId", "vehicle id has to be an integer").isNumeric(),
     body("title", "a title is required").not().isEmpty(),
@@ -16,6 +18,8 @@ const eventValidator = [
 const updateEventValidator = [
     param("id", "a vehicle id is required").not().isEmpty(),
     param("id", "vehicle id has to be an integer").isNumeric(),
+    body("userId", "a user id is required").optional().not().isEmpty(),
+    body("userId", "user id has to be an integer").optional().isNumeric(),
     body("vehicleId", "a vehicle id is required").optional().not().isEmpty(),
     body("vehicleId", "vehicle id has to be an integer").optional().isNumeric(),
     body("title", "a title is required").optional().not().isEmpty(),
