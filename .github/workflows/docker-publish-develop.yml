@@ -49,6 +49,7 @@ jobs:
             DB_PORT=${{ secrets.DB_PORT }}
             PORT=${{ secrets.PORT }}
             CLIENT_URL=${{ secrets.CLIENT_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
 
       - name: Image digest
         run: echo ${{ steps.docker.outputs.digest }}
