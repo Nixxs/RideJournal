@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Vehicle = require("../models/vehicle");
 const { saveImage } = require("../utils/uploadManager");
 
 const getUsers = async () => {
@@ -8,6 +9,11 @@ const getUsers = async () => {
 
 const getUser = async (id) => {
     const data = await User.findOne({where: {id: id}});
+    return data;
+}
+
+const getUserIncludeVehicles = async (id) => {
+    const data = await User.findOne({ where: { id: id }, include: [{model: Vehicle }]});
     return data;
 }
 
@@ -48,6 +54,7 @@ const deleteUser = async (id) => {
 module.exports = {
     getUsers,
     getUser,
+    getUserIncludeVehicles,
     getUserByEmail,
     createUser,
     updateUser,
