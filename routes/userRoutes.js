@@ -15,6 +15,7 @@ const {userValidator, updateUserValidator, uniqueEmailValidator, userLoginValida
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
+const verifyToken = require('../auth/authMiddleware');
 
 /**
  * @swagger
@@ -264,6 +265,8 @@ router.post("/login", userLoginValidator, async (req, res, next) => {
  * @swagger
  * /api/users/{id}:
  *  put:
+ *    security:
+ *     - bearerAuth: []
  *    description: Use to update a new user
  *    tags:
  *      - Users
@@ -311,7 +314,7 @@ router.post("/login", userLoginValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.put("/:id", upload.single('image'), imageUploadValidator, uniqueEmailValidator, updateUserValidator, async (req, res, next) => {
+router.put("/:id", upload.single('image'), verifyToken, imageUploadValidator, uniqueEmailValidator, updateUserValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
