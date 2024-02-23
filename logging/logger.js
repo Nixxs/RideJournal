@@ -14,7 +14,7 @@ const levels = {
 // This method set the current severity based on
 // the current NODE_ENV: show all the log levels
 const level = () => {
-  const env = process.env.NODE_ENV || "development";
+  const env = process.env.SERVER_ENV || "development";
   const isDevelopment = env === "development";
   return isDevelopment ? "debug" : "warn";
 };

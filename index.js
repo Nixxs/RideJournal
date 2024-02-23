@@ -29,7 +29,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // Setup Swagger when running in dev
-if (process.env.NODE_ENV === 'development') {
+if (process.env.SERVER_ENV === 'development') {
     const swaggerUi = require('swagger-ui-express');
     const swaggerSpec = require('./swagger/swaggerSpec');
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec.default));

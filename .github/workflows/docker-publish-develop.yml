@@ -41,7 +41,7 @@ jobs:
             NODE_VERSION=${{ matrix.node-version }}
             OS=${{ matrix.os }}
             ARCH=${{ matrix.arch }}
-            NODE_ENV='development'
+            SERVER_ENV='development'
             DB_NAME=${{ secrets.DB_NAME }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}

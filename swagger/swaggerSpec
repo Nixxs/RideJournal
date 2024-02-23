@@ -21,6 +21,15 @@ const swaggerDocument = {
   schemes: ['http'],
   consumes: ['application/json'],
   produces: ['application/json'],
+  components: { // Add this section for security schemes
+    securitySchemes: {
+      bearerAuth: { // This name should match the name used in your route's security section
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT', // Optional, specify the format of the token
+      },
+    },
+  },
 }
 
 const options = {

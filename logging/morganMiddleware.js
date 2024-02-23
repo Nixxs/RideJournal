@@ -14,7 +14,7 @@ const stream = {
 // we already told to the logger that it should print
 // only warning and error messages in production.
 const skip = () => {
-  const env = process.env.NODE_ENV || "development";
+  const env = process.env.SERVER_ENV || "development";
   return env !== "development";
 };
 
