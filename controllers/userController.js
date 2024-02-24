@@ -42,8 +42,14 @@ const updateUser = async (id, data) => {
         userData.image = await saveImage(image, "user");
     } 
     // do the database create line here
-    const user = await User.update(userData, {where: {id: id}});
-    return user;
+    const updateResponse = await User.update(userData, {where: {id: id}});
+
+    if (updateResponse[0] === 0) {
+        return null;
+    } else {
+        const user = await User.findOne({where: {id: id}});
+        return user;
+    }
 }
 
 const deleteUser = async (id) => {
