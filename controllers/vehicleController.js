@@ -12,6 +12,11 @@ const getVehicle = async (id) => {
     return data;
 }
 
+const getVehicleIncludeAll = async (id) => {
+    const data = await Vehicle.findOne({ where: { id: id }, include: { all: true }});
+    return data;
+}
+
 const getVehiclesByUser = async (id) => {
     const data = await Vehicle.findAll({where: {userId: id}});
     return data;
@@ -53,6 +58,7 @@ const deleteVehicle = async (id) => {
 module.exports = {
     getVehicles,
     getVehicle,
+    getVehicleIncludeAll,
     getVehiclesByUser,
     getVehiclesByType,
     createVehicle,
