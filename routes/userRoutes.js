@@ -240,21 +240,25 @@ router.post("/", upload.single('image'), imageUploadValidator, uniqueEmailValida
 router.post("/login", userLoginValidator, async (req, res, next) => {
     try{
         const errors = validationResult(req);
-        const userData = await userController.getUserByEmail(req.body.email);
-        if(userData){
-            const match = await bcrypt.compare(req.body.password, userData.password);
-            if(match){
-                const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET, {
-                    expiresIn: "1h"
-                });
-
-                const payloadData = {token: token, user: userData};
-                res.send({ result: 200, data: payloadData });
+        if(errors.isEmpty()){
+            const userData = await userController.getUserByEmail(req.body.email);
+            if(userData){
+                const match = await bcrypt.compare(req.body.password, userData.password);
+                if(match){
+                    const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET, {
+                        expiresIn: "1h"
+                    });
+    
+                    const payloadData = {token: token, user: userData};
+                    res.send({ result: 200, data: payloadData });
+                }else{
+                    res.status(404).json({errors: [{"msg": "Invalid email or password"}]});
+                }
             }else{
-                res.status(404).json({errors: ["Invalid email or password"]});
+                res.status(404).json({errors: [{"msg": "Invalid email or password"}]});
             }
-        }else{
-            res.status(404).json({errors: errors.array()});
+        } else {
+            res.status(422).json({errors: errors.array()});
         }
     } catch(err){
       next(err);
