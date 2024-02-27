@@ -1,7 +1,9 @@
 const Event = require("../models/event");
 
 const getEvents = async () => {
-    const data = await Event.findAll({});
+    const data = await Event.findAll({
+        order: [["CreatedAt", "DESC"]]
+    });
     return data;
 }
 
