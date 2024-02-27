@@ -1,9 +1,10 @@
 const Vehicle = require("../models/vehicle");
 const { saveImage } = require("../utils/uploadManager");
 
-
 const getVehicles = async () => {
-    const data = await Vehicle.findAll({});
+    const data = await Vehicle.findAll({
+        order: [["CreatedAt", "DESC"]]
+    });
     return data;
 }
 
