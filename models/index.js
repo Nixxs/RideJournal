@@ -9,6 +9,7 @@ const Like = require("./like");
 async function init() {
     // create relationships between models
         User.hasMany(Vehicle, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "userId",
                 allowNull: false,
@@ -21,6 +22,7 @@ async function init() {
             }
         });
         User.hasMany(Comment, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "userId",
                 allowNull: false,
@@ -33,6 +35,7 @@ async function init() {
             }
         });
         User.hasMany(Like, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "userId",
                 allowNull: false,
@@ -45,6 +48,7 @@ async function init() {
             }
         });
         User.hasMany(Event, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "userId",
                 allowNull: false,
@@ -59,6 +63,7 @@ async function init() {
 
 
         Vehicle.hasMany(Event, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "vehicleId",
                 allowNull: false,
@@ -72,6 +77,7 @@ async function init() {
         });
 
         Event.hasMany(Like, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "eventId",
                 allowNull: false,
@@ -84,6 +90,7 @@ async function init() {
             },
         });
         Event.hasMany(Comment, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "eventId",
                 allowNull: false,
@@ -96,6 +103,7 @@ async function init() {
             },
         });
         Event.hasMany(Image, {
+            onDelete: 'CASCADE',
             foreignKey: {
                 name: "eventId",
                 allowNull: false,
