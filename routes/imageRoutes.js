@@ -10,6 +10,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const {validationResult} = require('express-validator');
 const { idParamValidator, imageUploadValidator } = require("../validators");
 const {imageValidator} = require("../validators/imageValidator");
+const verifyToken = require("../auth/authMiddleware");
 
 /**
  * @swagger
@@ -157,7 +158,7 @@ router.get("/event/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", upload.single('image'), imageUploadValidator, imageValidator, async (req, res, next) =>{
+router.post("/", upload.single('image'), verifyToken, imageUploadValidator, imageValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
@@ -165,54 +166,17 @@ router.post("/", upload.single('image'), imageUploadValidator, imageValidator, a
             if (req.file){
                 imageData.image = req.file;
             }
-            const data = await imageController.createImage(imageData);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result:200, data:data});
-            }
-        } else {
-            res.status(422).json({errors: errors.array()});
-        }
-    } catch(err) {
-        next(err);
-    }
-});
-
-/**
- * @swagger
- * /api/images/{id}:
- *  delete:
- *    description: Use to delete a image by ID
- *    tags:
- *      - Images
- *    parameters:
- *      - name: id
- *        in: path
- *        description: ID of image to delete
- *        required: true
- *        type: integer
- *        minimum: 1
- *        example: 1
- *    responses:
- *      '200':
- *        description: A successful response
- *      '404':
- *        description: Image not found
- *      '422':
- *        description: Validation error
- *      '500':
- *        description: Server error
- */
-router.delete("/:id", idParamValidator, async (req, res, next) => {
-    try {
-        const errors = validationResult(req);
-        if (errors.isEmpty()){
-            const data = await imageController.deleteImage(req.params.id);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result: 200, data: data});
+            const data = await imageController.createImage(imageData, req.userId);
+            switch (data) {
+                case 400:
+                    res.sendStatus(400);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result: 200, data: data});
+                    break;
             }
         } else {
             res.status(422).json({errors: errors.array()});

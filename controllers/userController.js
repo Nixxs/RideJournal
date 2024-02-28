@@ -35,7 +35,12 @@ const createUser = async (data) => {
     return user;
 }
 
-const updateUser = async (id, data) => {
+const updateUser = async (id, data, tokenUserId) => {
+    // if the user to be updated is not the same as the token user reject
+    if (id !== tokenUserId) {
+        return 401;
+    }
+    
     const { image, ...userData } = data;
     // if there is an image in the data to handle
     if (image){

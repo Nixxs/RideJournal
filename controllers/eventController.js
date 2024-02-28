@@ -1,4 +1,5 @@
 const Event = require("../models/event");
+const Vehicle = require("../models/vehicle");
 
 const getEvents = async () => {
     const data = await Event.findAll({
@@ -27,17 +28,34 @@ const getEventsByType = async (type) => {
     return data;
 }
 
-const createEvent = async (data) => {
+const createEvent = async (data, tokenUserId) => {
+    const { vehicleId, ...eventData } = data;
+    const vehicleOwnerData = await Vehicle.findOne({where: {id: vehicleId}});
+    if (Number(vehicleOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
     const event = await Event.create(data);
     return event;
 }
 
-const updateEvent = async (id, data) => {
+const updateEvent = async (id, data, tokenUserId) => {
+    const eventData = await Event.findOne({where: {id: id}});
+    const vehicleId = eventData.vehicleId;
+    const vehicleOwnerData = await Vehicle.findOne({where: {id: vehicleId}});
+    if (Number(vehicleOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
     const event = await Event.update(data, {where: {id: id}});
     return event;
 }
 
-const deleteEvent = async (id) => {
+const deleteEvent = async (id, tokenUserId) => {
+    const eventData = await Event.findOne({where: {id: id}});
+    const vehicleId = eventData.vehicleId;
+    const vehicleOwnerData = await Vehicle.findOne({where: {id: vehicleId}});
+    if (Number(vehicleOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
     const event = await Event.destroy({where: {id: id}});
     return event;
 }

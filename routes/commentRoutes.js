@@ -6,6 +6,7 @@ const commentController = require("../controllers/commentController");
 const {validationResult} = require('express-validator');
 const { idParamValidator } = require("../validators");
 const {commentValidator, updateCommentValidator} = require("../validators/commentValidator");
+const verifyToken = require("../auth/authMiddleware");
 
 /**
  * @swagger
@@ -198,15 +199,20 @@ router.get("/user/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", commentValidator, async (req, res, next) =>{
+router.post("/", verifyToken, commentValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await commentController.createComment(req.body);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result:200, data:data});
+            const data = await commentController.createComment(req.body, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             res.status(422).json({errors: errors.array()});
@@ -261,17 +267,20 @@ router.post("/", commentValidator, async (req, res, next) =>{
  *      '500':
  *        description: Server error
  */
-router.put("/:id", updateCommentValidator, async (req, res, next) => {
+router.put("/:id", verifyToken, updateCommentValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await commentController.updateComment(req.params.id, req.body);
-            if (!data){
-                // if there is no data returned then its a 404 not found
-                res.sendStatus(404);
-            } else {
-                // all good
-                res.send({result:200, data: data});
+            const data = await commentController.updateComment(req.params.id, req.body, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             // there are errors in the request
@@ -307,15 +316,20 @@ router.put("/:id", updateCommentValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res, next) => {
+router.delete("/:id", verifyToken, idParamValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await commentController.deleteComment(req.params.id);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result: 200, data: data});
+            const data = await commentController.deleteComment(req.params.id, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             res.status(422).json({errors: errors.array()});

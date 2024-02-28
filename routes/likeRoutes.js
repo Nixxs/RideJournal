@@ -6,6 +6,7 @@ const likeController = require("../controllers/likeController");
 const {validationResult} = require('express-validator');
 const { idParamValidator } = require("../validators");
 const {likeValidator} = require("../validators/likeValidator");
+const verifyToken = require("../auth/authMiddleware");
 
 /**
  * @swagger
@@ -194,15 +195,23 @@ router.get("/user/:id", idParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", likeValidator, async (req, res, next) =>{
+router.post("/", verifyToken, likeValidator, async (req, res, next) =>{
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await likeController.createLike(req.body);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result:200, data:data});
+            const data = await likeController.createLike(req.body, req.userId);
+            switch (data) {
+                case 400:
+                    res.sendStatus(400);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                case 409:
+                    res.status(409).json({errors: [{"msg":"Conflict you can't like an event more than once"}]});
+                    break;
+                default:
+                    res.send({result: 200, data: data});
             }
         } else {
             res.status(422).json({errors: errors.array()});
@@ -237,15 +246,20 @@ router.post("/", likeValidator, async (req, res, next) =>{
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res, next) => {
+router.delete("/:id", verifyToken, idParamValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await likeController.deleteLike(req.params.id);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result: 200, data: data});
+            const data = await likeController.deleteLike(req.params.id, req.userId);
+            switch (data) {
+                case 400:
+                    res.sendStatus(400);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result: 200, data: data});
             }
         } else {
             res.status(422).json({errors: errors.array()});

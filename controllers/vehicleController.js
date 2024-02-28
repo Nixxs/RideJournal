@@ -28,7 +28,12 @@ const getVehiclesByType = async (type) => {
     return data;
 }
 
-const createVehicle = async (data) => {
+const createVehicle = async (data, tokenUserId) => {
+    // if ther user to be updated is not the same as the token user reject
+    if (Number(data.userId) !== tokenUserId) {
+        return 401;
+    }
+
     const { image, ...vehicleData } = data;
     // if there is an image in the data to handle
     if (image){
@@ -41,7 +46,12 @@ const createVehicle = async (data) => {
     return vehicle;
 }
 
-const updateVehicle = async (id, data) => {
+const updateVehicle = async (id, data, tokenUserId) => {
+    const vehicleOwnerData = await Vehicle.findOne({where: {id: id}});
+    if (Number(vehicleOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
+
     const { image, ...vehicleData } = data;
     // if there is an image in the data to handle
     if (image){
@@ -51,7 +61,13 @@ const updateVehicle = async (id, data) => {
     return vehicle;
 }
 
-const deleteVehicle = async (id) => {
+const deleteVehicle = async (id, tokenUserId) => {
+    // if the vehicle you are trying to delete is not yours reject
+    const vehicleData = await Vehicle.findOne({where: {id: id}});
+    if (Number(vehicleData.userId) !== tokenUserId) {
+        return 401;
+    }
+
     const vehicle = await Vehicle.destroy({where: {id: id}});
     return vehicle;
 }

@@ -115,13 +115,13 @@ async function init() {
                 allowNull: false,
             }
         });
-      // sync all models with database
-    await User.sync({ force: true });
-    await Vehicle.sync({ force: true });
-    await Event.sync({ force: true });
-    await Comment.sync({ force: true });
-    await Image.sync({ force: true });
-    await Like.sync({ force: true });
+
+        await User.sync();
+        await Vehicle.sync();
+        await Event.sync();
+        await Comment.sync();
+        await Image.sync();
+        await Like.sync();
     }
 
     module.exports = {

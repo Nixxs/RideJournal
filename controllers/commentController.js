@@ -21,17 +21,28 @@ const getCommentsByUser = async (id) => {
     return data;
 }
 
-const createComment = async (data) => {
+const createComment = async (data, tokenUserId) => {
+    if (Number(data.userId) !== tokenUserId) {
+        return 401;
+    }
     const comment = await Comment.create(data);
     return comment;
 }
 
-const updateComment = async (id, data) => {
+const updateComment = async (id, data, tokenUserId) => {
+    const commentOwnerData = await Comment.findOne({ where: { id: id } });
+    if (Number(commentOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
     const comment = await Comment.update(data, { where: { id: id } });
     return comment;
 }
 
-const deleteComment = async (id) => {
+const deleteComment = async (id, tokenUserId) => {
+    const commentOwnerData = await Comment.findOne({ where: { id: id } });
+    if (Number(commentOwnerData.userId) !== tokenUserId) {
+        return 401;
+    }
     const comment = await Comment.destroy({ where: { id: id } });
     return comment;
 }

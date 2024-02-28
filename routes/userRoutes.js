@@ -331,14 +331,17 @@ router.put("/:id", upload.single('image'), verifyToken, imageUploadValidator, un
             if (req.file){
                 userData.image = req.file
             }
-            const data = await userController.updateUser(req.params.id, userData);
+            const data = await userController.updateUser(Number(req.params.id), userData, Number(req.userId));
 
-            if (!data){
-                // if there is no data returned then its a 404 not found
-                res.sendStatus(404);
-            } else {
-                // all good
-                res.send({result:200, data: data});
+            switch(data){
+                case 401:
+                    res.status(401).json({errors: [{"msg": "Unauthorized"}]});
+                    break;
+                case null:
+                    res.sendStatus(404);
+                    break;
+                default:
+                    res.send({result:200, data: data});
             }
         } else {
             // there are errors in the request

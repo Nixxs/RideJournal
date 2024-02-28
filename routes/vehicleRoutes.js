@@ -10,6 +10,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const {validationResult} = require('express-validator');
 const { idParamValidator, imageUploadValidator } = require("../validators");
 const {vehicleValidator, updateVehicleValidator, vehicleTypeParamValidator} = require("../validators/vehicleValidator");
+const verifyToken = require("../auth/authMiddleware");
 
 /**
  * @swagger
@@ -275,7 +276,7 @@ router.get("/type/:type", vehicleTypeParamValidator, async (req, res, next) => {
  *      '500':
  *        description: Server error
  */
-router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator, async (req, res, next) => {
+router.post("/", upload.single('image'), verifyToken, imageUploadValidator, vehicleValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
@@ -283,11 +284,16 @@ router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator,
             if (req.file){
                 vehicleData.image = req.file;
             }
-            const data = await vehicleController.createVehicle(vehicleData);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result:200, data:data});
+            const data = await vehicleController.createVehicle(vehicleData, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             res.status(422).json({errors: errors.array()});
@@ -363,7 +369,7 @@ router.post("/", upload.single('image'), imageUploadValidator, vehicleValidator,
  *      '500':
  *        description: Server error
  */
-router.put("/:id", upload.single('image'), imageUploadValidator, updateVehicleValidator, async (req, res, next) => {
+router.put("/:id", upload.single('image'), verifyToken, imageUploadValidator, updateVehicleValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
@@ -371,13 +377,16 @@ router.put("/:id", upload.single('image'), imageUploadValidator, updateVehicleVa
             if (req.file){
                 vehicleData.image = req.file
             }
-            const data = await vehicleController.updateVehicle(req.params.id, vehicleData);
-            if (!data){
-                // if there is no data returned then its a 404 not found
-                res.sendStatus(404);
-            } else {
-                // all good
-                res.send({result:200, data: data});
+            const data = await vehicleController.updateVehicle(req.params.id, vehicleData, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             // there are errors in the request
@@ -413,15 +422,20 @@ router.put("/:id", upload.single('image'), imageUploadValidator, updateVehicleVa
  *      '500':
  *        description: Server error
  */
-router.delete("/:id", idParamValidator, async (req, res, next) => {
+router.delete("/:id", verifyToken, idParamValidator, async (req, res, next) => {
     try {
         const errors = validationResult(req);
         if (errors.isEmpty()){
-            const data = await vehicleController.deleteVehicle(req.params.id);
-            if (!data){
-                res.sendStatus(404);
-            } else {
-                res.send({result: 200, data: data});
+            const data = await vehicleController.deleteVehicle(req.params.id, req.userId);
+            switch (data) {
+                case 404:
+                    res.sendStatus(404);
+                    break;
+                case 401:
+                    res.status(401).json({errors: [{"msg":"Unauthorized"}]});
+                    break;
+                default:
+                    res.send({result:200, data:data});
             }
         } else {
             res.status(422).json({errors: errors.array()});
