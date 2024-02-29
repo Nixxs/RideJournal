@@ -1,9 +1,11 @@
 const Event = require("../models/event");
 const Vehicle = require("../models/vehicle");
 
-const getEvents = async () => {
+const getEvents = async ({limit = 10, offset = 0}) => {
     const data = await Event.findAll({
-        order: [["CreatedAt", "DESC"]]
+        order: [["CreatedAt", "DESC"]],
+        limit: limit,
+        offset: offset
     });
     return data;
 }

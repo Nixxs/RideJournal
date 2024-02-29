@@ -15,6 +15,19 @@ const verifyToken = require("../auth/authMiddleware");
  *    description: Use to request all events
  *    tags:
  *      - Events
+ *    parameters:
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *          default: 10
+ *        description: Limit the number of events returned. Default is 10.
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *          default: 0
+ *        description: Number of events to skip for pagination. Default is 0.
  *    responses:
  *      '200':
  *        description: A successful response
@@ -25,7 +38,10 @@ const verifyToken = require("../auth/authMiddleware");
  */
 router.get("/", async (req, res, next) => {
     try {
-        const data = await eventController.getEvents();
+        const limit = parseInt(req.query.limit, 10) || 10; // Default limit is 10
+        const offset = parseInt(req.query.offset, 10) || 0; // Default offset is 0
+
+        const data = await eventController.getEvents({limit, offset});
         res.send({result:200, data: data});
     } catch(err) {
         next(err);
